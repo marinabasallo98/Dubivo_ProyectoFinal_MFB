@@ -40,4 +40,20 @@ class Work extends Model
     {
         return $query->where('type', 'animation');
     }
+    public function scopeCommercial($query)
+    {
+        return $query->where('type', 'commercial');
+    }
+    public function scopeVideogame($query)
+    {
+        return $query->where('type', 'videogame');
+    }
+    public function scopeDocumentary($query)
+    {
+        return $query->where('type', 'documentary');
+    }
+    public function scopeOther($query)
+    {
+        return $query->where('type', 'other');
+    }
 }

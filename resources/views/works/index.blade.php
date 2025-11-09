@@ -28,6 +28,8 @@
                     <option value="commercial" {{ request('type') == 'commercial' ? 'selected' : '' }}>Comercial</option>
                     <option value="animation" {{ request('type') == 'animation' ? 'selected' : '' }}>Animación</option>
                     <option value="videogame" {{ request('type') == 'videogame' ? 'selected' : '' }}>Videojuego</option>
+                    <option value="documentary" {{ request('type') == 'documentary' ? 'selected' : '' }}>Documental</option>
+                    <option value="other" {{ request('type') == 'other' ? 'selected' : '' }}>Otro</option>
                 </select>
             </div>
             

@@ -178,6 +178,66 @@
                 @enderror
             </div>
 
+
+{{-- Sección para asignar como profesor --}}
+@if(Auth::user()->role == 'admin')
+<div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+    <h3 class="text-lg font-semibold text-blue-800 mb-4">🏫 Asignar como Profesor</h3>
+    
+    <form action="{{ route('admin.schools.teachers.store', $actor) }}" method="POST">
+        @csrf
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Escuela</label>
+                <select name="school_id" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                    <option value="">Seleccionar escuela...</option>
+                    @foreach($schools as $school)
+                        <option value="{{ $school->id }}" 
+                            {{ $actor->teachingSchools->contains($school->id) ? 'selected' : '' }}>
+                            {{ $school->name }} - {{ $school->city }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Materia que imparte</label>
+                <input type="text" name="subject" 
+                       value="{{ $actor->teachingSchools->first() ? $actor->teachingSchools->first()->pivot->subject : '' }}"
+                       class="w-full border border-gray-300 rounded-lg px-3 py-2"
+                       placeholder="Ej: Doblaje, Interpretación...">
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Bio como profesor</label>
+            <textarea name="teaching_bio" rows="3" 
+                      class="w-full border border-gray-300 rounded-lg px-3 py-2"
+                      placeholder="Información específica como profesor...">{{ $actor->teachingSchools->first() ? $actor->teachingSchools->first()->pivot->teaching_bio : '' }}</textarea>
+        </div>
+        
+        <div class="mt-4 flex justify-between">
+            @if($actor->teachingSchools->count() > 0)
+                <button type="submit" name="action" value="update" 
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                    Actualizar información de profesor
+                </button>
+                <button type="submit" name="action" value="remove" 
+                        class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg"
+                        onclick="return confirm('¿Remover como profesor?')">
+                    Remover como profesor
+                </button>
+            @else
+                <button type="submit" name="action" value="add" 
+                        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
+                    Asignar como profesor
+                </button>
+            @endif
+        </div>
+    </form>
+</div>
+@endif
+
             <!-- Obras -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">

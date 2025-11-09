@@ -79,11 +79,7 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/users/{user}', [AdminController::class, 'destroyUser'])->name('admin.users.destroy');
 
         // Rutas para gestión de profesores
-        Route::get('/schools/{school}/teachers/create', [SchoolTeacherController::class, 'create'])->name('admin.schools.teachers.create');
-        Route::post('/schools/{school}/teachers', [SchoolTeacherController::class, 'store'])->name('admin.schools.teachers.store');
-        Route::get('/schools/{school}/teachers/{actor}/edit', [SchoolTeacherController::class, 'edit'])->name('admin.schools.teachers.edit');
-        Route::put('/schools/{school}/teachers/{actor}', [SchoolTeacherController::class, 'update'])->name('admin.schools.teachers.update');
-        Route::delete('/schools/{school}/teachers/{actor}', [SchoolTeacherController::class, 'destroy'])->name('admin.schools.teachers.destroy');
+Route::post('/actors/{actor}/manage-teacher', [SchoolTeacherController::class, 'manage'])->name('admin.actors.manage-teacher');
     });
 });
 

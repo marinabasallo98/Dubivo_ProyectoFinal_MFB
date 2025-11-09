@@ -98,4 +98,33 @@ class SchoolTeacherController extends Controller
         return redirect()->route('schools.show', $school)
                         ->with('success', 'Profesor removido exitosamente.');
     }
+    public function manage(Request $request, Actor $actor)
+{
+    if (Auth::user()->role != 'admin') {
+        abort(403, 'No autorizado.');
+    }
+
+    $validated = $request->validate([
+        'school_id' => 'required|exists:schools,id',
+        'subject' => 'required|string|max:255',
+        'teaching_bio' => 'nullable|string|max:1000',
+        'action' => 'required|in:add,update,remove'
+    ]);
+
+    if ($request->action == 'remove') {
+        $actor->teachingSchools()->detach($validated['school_id']);
+        return back()->with('success', 'Profesor removido exitosamente.');
+    }
+
+    // Add or update
+    $actor->teachingSchools()->syncWithoutDetaching([
+        $validated['school_id'] => [
+            'subject' => $validated['subject'],
+            'teaching_bio' => $validated['teaching_bio']
+        ]
+    ]);
+
+    $message = $request->action == 'add' ? 'Profesor agregado exitosamente.' : 'Información actualizada.';
+    return back()->with('success', $message);
+}
 }

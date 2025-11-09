@@ -14,8 +14,8 @@ class SchoolController extends Controller
     }
 
     public function show(School $school)
-    {
-        $school->load('actors.user');
-        return view('schools.show', compact('school'));
-    }
+{
+    $school->load(['actors.user', 'teacherActors.user']); 
+    return view('schools.show', compact('school'));
+}
 }

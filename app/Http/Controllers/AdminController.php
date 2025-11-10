@@ -28,6 +28,7 @@ class AdminController extends Controller
             'total_clients' => User::where('role', 'client')->count(),
             'total_schools' => School::count(),
             'total_works' => Work::count(),
+            'total_teacher_actors' => Actor::has('teachingSchools')->count(),
         ];
 
         // Datos para actividad reciente

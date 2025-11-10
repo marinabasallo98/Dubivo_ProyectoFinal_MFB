@@ -31,9 +31,6 @@ class RegisterController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'bio' => 'required|string|max:1000',
-            'genders' => 'required|array',
-            'voice_ages' => 'required|array',
         ]);
 
         if ($validator->fails()) {
@@ -51,9 +48,9 @@ class RegisterController extends Controller
         // Crear perfil de actor automáticamente y guardar la variable
         $actor = Actor::create([
             'user_id' => $user->id,
-            'bio' => $request->bio,
-            'genders' => $request->genders,
-            'voice_ages' => $request->voice_ages,
+            'bio' => null,
+            'genders' => [],
+            'voice_ages' => [],
             'is_available' => true,
         ]);
 

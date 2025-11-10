@@ -26,12 +26,8 @@
             <div class="text-sm text-gray-600">Total Escuelas</div>
         </div>
         <div class="bg-white rounded-lg shadow p-4 text-center">
-            <div class="text-2xl font-bold text-green-600">{{ $schools->where('city', '!=', '')->count() }}</div>
-            <div class="text-sm text-gray-600">Con Ciudad</div>
-        </div>
-        <div class="bg-white rounded-lg shadow p-4 text-center">
-            <div class="text-2xl font-bold text-purple-600">{{ $schools->where('founded_year', '!=', null)->count() }}</div>
-            <div class="text-sm text-gray-600">Con Año</div>
+            <div class="text-2xl font-bold text-orange-600">{{ $schools->sum('teachers_count') }}</div>
+            <div class="text-sm text-gray-600">Total Profesores</div>
         </div>
         <div class="bg-white rounded-lg shadow p-4 text-center">
             <div class="text-2xl font-bold text-orange-600">{{ $schools->sum('actors_count') }}</div>

@@ -77,6 +77,19 @@
             </div>
         </div>
     </div>
+
+        <!-- Total Profesores -->
+    <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-indigo-500">
+        <div class="flex items-center">
+            <div class="bg-indigo-100 p-3 rounded-full">
+                <i class="fas fa-film text-green-600 text-xl"></i>
+            </div>
+            <div class="ml-4">
+                <p class="text-sm font-medium text-gray-600">Profesores</p>
+                <p class="text-2xl font-bold text-gray-900">{{ $stats['total_teacher_actors'] }}</p>
+            </div>
+        </div>
+    </div>
     </div>
 
     <!-- Acciones Rápidas -->
@@ -198,15 +211,27 @@
                     <div class="flex-1">
                         <p class="font-medium text-gray-800">{{ $actor->user->name }}</p>
                         <p class="text-sm text-gray-600 capitalize">
-                            {{ $actor->gender }} • {{ str_replace('_', ' ', $actor->voice_age) }}
-                        </p>
-                    </div>
-                </div>
-                @empty
-                <p class="text-gray-500 text-center py-4">No hay actores registrados recientemente</p>
-                @endforelse
+                            @if($actor->genders && count($actor->genders) > 0)
+                        {{ implode(', ', $actor->genders) }}
+                    @else
+                        Género no especificado
+                    @endif
+                    
+                    • 
+                    
+                    @if($actor->voice_ages && count($actor->voice_ages) > 0)
+                        {{ implode(', ', $actor->voice_ages) }}
+                    @else
+                        Edad no especificada
+                    @endif
+                </p>
             </div>
         </div>
+        @empty
+        <p class="text-gray-500 text-center py-4">No hay actores registrados recientemente</p>
+        @endforelse
+    </div>
+</div>
     </div>
 </div>
 @endsection

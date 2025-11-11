@@ -106,64 +106,63 @@
         </div>
     </div>
 
-    <!-- Actores que participaron -->
-    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-        <h2 class="text-2xl font-bold mb-6">Actores en esta obra</h2>
-        
-        @if($work->actors->count() > 0)
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                @foreach($work->actors as $actor)
-                    <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition duration-300">
-                        <div class="flex items-start space-x-4">
-                            @if($actor->photo)
-                                <img src="{{ asset('storage/' . $actor->photo) }}" 
-                                     alt="{{ $actor->name }}" 
-                                     class="w-16 h-16 rounded-full object-cover">
-                            @else
-                                <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
-                                    <i class="fas fa-user text-gray-400"></i>
-                                </div>
-                            @endif
-                            
-                            <div class="flex-1">
-                                <h3 class="font-semibold text-lg mb-1">{{ $actor->name }}</h3>
-                                
-                                <!-- Personaje (si existe) -->
-                                @if($actor->pivot->character_name)
-                                    <p class="text-blue-600 font-medium text-sm mb-2">
-                                        Personaje: {{ $actor->pivot->character_name }}
-                                    </p>
-                                @endif
-                                
-                                <p class="text-gray-600 text-sm mb-2 capitalize">
-                                    {{ $actor->gender }} • {{ str_replace('_', ' ', $actor->voice_age) }}
-                                </p>
-                                
-                                @if($actor->bio)
-                                    <p class="text-gray-700 text-sm mb-3 line-clamp-2">
-                                        {{ Str::limit($actor->bio, 80) }}
-                                    </p>
-                                @endif
-                                
-                                <div class="flex space-x-2">
-                                    <a href="{{ route('actors.show', $actor) }}" 
-                                       class="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                                        Ver perfil →
-                                    </a>
-                                </div>
+    {{-- Actores que participaron --}}
+@if($work->actors->count() > 0)
+    <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4">Actores que participaron</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            @foreach($work->actors as $actor)
+                <div class="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition duration-200">
+                    {{-- Foto con link --}}
+                    <a href="{{ route('actors.show', $actor) }}" class="flex-shrink-0">
+                        @if($actor->photo)
+                            <img src="{{ asset('storage/' . $actor->photo) }}" 
+                                 alt="{{ $actor->user->name }}"
+                                 class="w-12 h-12 rounded-full object-cover hover:opacity-80 transition duration-200">
+                        @else
+                            <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 transition duration-200">
+                                <i class="fas fa-user text-gray-400"></i>
                             </div>
-                        </div>
+                        @endif
+                    </a>
+                    
+                    <div class="flex-1">
+                        {{-- Nombre con link --}}
+                        <a href="{{ route('actors.show', $actor) }}" class="hover:text-blue-600 transition duration-200">
+                            <h4 class="font-medium text-gray-800 hover:text-blue-600">{{ $actor->user->name }}</h4>
+                        </a>
+                        
+                        <p class="text-gray-600 text-sm mb-2">
+                            @if($actor->genders && count($actor->genders) > 0)
+                                {{ implode(', ', $actor->genders) }}
+                            @else
+                                Género no especificado
+                            @endif
+                            • 
+                            @if($actor->voice_ages && count($actor->voice_ages) > 0)
+                                {{ implode(', ', $actor->voice_ages) }}
+                            @else
+                                Edad no especificada
+                            @endif
+                        </p>
+                        
+                        @if($actor->pivot->character_name)
+                            <p class="text-sm text-blue-600 font-medium">
+                                Personaje: {{ $actor->pivot->character_name }}
+                            </p>
+                        @endif
+                        
+                        {{-- Link "Ver perfil" --}}
+                        <a href="{{ route('actors.show', $actor) }}" 
+                           class="text-blue-600 hover:text-blue-800 text-sm font-medium inline-block mt-1">
+                            Ver perfil completo →
+                        </a>
                     </div>
-                @endforeach
-            </div>
-        @else
-            <div class="text-center py-8">
-                <i class="fas fa-users text-4xl text-gray-300 mb-4"></i>
-                <h3 class="text-xl font-semibold text-gray-500 mb-2">No hay actores registrados</h3>
-                <p class="text-gray-400">Esta obra aún no tiene actores asociados en nuestra base de datos.</p>
-            </div>
-        @endif
+                </div>
+            @endforeach
+        </div>
     </div>
+@endif
 
     
 

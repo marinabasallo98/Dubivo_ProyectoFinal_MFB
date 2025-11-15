@@ -19,70 +19,109 @@
         </div>
     </div>
 
-    <!-- Estadísticas -->
-    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+   <!-- Estadísticas -->
+<div class="space-y-4 mb-6">
+    <!-- Primera fila: Totales y principales -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <!-- Total Obras -->
         <div class="bg-white rounded-lg shadow p-4 text-center">
             <div class="text-2xl font-bold text-blue-600">{{ $works->total() }}</div>
             <div class="text-sm text-gray-600">Total Obras</div>
         </div>
+        
+        <!-- Total Actores -->
+        <div class="bg-white rounded-lg shadow p-4 text-center">
+            <div class="text-2xl font-bold text-teal-600">{{ $works->sum('actors_count') }}</div>
+            <div class="text-sm text-gray-600">Total Actores</div>
+        </div>
+        
+        <!-- Películas -->
         <div class="bg-white rounded-lg shadow p-4 text-center">
             <div class="text-2xl font-bold text-green-600">{{ $works->where('type', 'movie')->count() }}</div>
             <div class="text-sm text-gray-600">Películas</div>
         </div>
+        
+        <!-- Series -->
         <div class="bg-white rounded-lg shadow p-4 text-center">
             <div class="text-2xl font-bold text-purple-600">{{ $works->where('type', 'series')->count() }}</div>
             <div class="text-sm text-gray-600">Series</div>
         </div>
+    </div>
+    
+    <!-- Segunda fila: Resto de tipos -->
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <!-- Publicidad -->
         <div class="bg-white rounded-lg shadow p-4 text-center">
-            <div class="text-2xl font-bold text-orange-600">{{ $works->where('type', 'animation')->count() }}</div>
+            <div class="text-2xl font-bold text-yellow-600">{{ $works->where('type', 'commercial')->count() }}</div>
+            <div class="text-sm text-gray-600">Publicidad</div>
+        </div>
+        
+        <!-- Animación -->
+        <div class="bg-white rounded-lg shadow p-4 text-center">
+            <div class="text-2xl font-bold text-pink-600">{{ $works->where('type', 'animation')->count() }}</div>
             <div class="text-sm text-gray-600">Animación</div>
         </div>
+        
+        <!-- Videojuegos -->
         <div class="bg-white rounded-lg shadow p-4 text-center">
-            <div class="text-2xl font-bold text-red-600">{{ $works->sum('actors_count') }}</div>
-            <div class="text-sm text-gray-600">Total Actores</div>
+            <div class="text-2xl font-bold text-red-600">{{ $works->where('type', 'videogame')->count() }}</div>
+            <div class="text-sm text-gray-600">Videojuegos</div>
+        </div>
+        
+        <!-- Documentales -->
+        <div class="bg-white rounded-lg shadow p-4 text-center">
+            <div class="text-2xl font-bold text-indigo-600">{{ $works->where('type', 'documentary')->count() }}</div>
+            <div class="text-sm text-gray-600">Documentales</div>
+        </div>
+        
+        <!-- Otros -->
+        <div class="bg-white rounded-lg shadow p-4 text-center">
+            <div class="text-2xl font-bold text-gray-600">{{ $works->where('type', 'other')->count() }}</div>
+            <div class="text-sm text-gray-600">Otros</div>
         </div>
     </div>
+</div>
 
     <!-- Filtros -->
-    <div class="bg-white rounded-lg shadow-md p-4 mb-6">
-        <form method="GET" action="{{ route('admin.works') }}" class="flex flex-wrap gap-4 items-end">
-            <div class="flex-1 min-w-[200px]">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Tipo</label>
-                <select name="type" class="w-full border border-gray-300 rounded-lg px-3 py-2">
-                    <option value="">Todos los tipos</option>
-                    <option value="movie" {{ request('type') == 'movie' ? 'selected' : '' }}>Película</option>
-                    <option value="series" {{ request('type') == 'series' ? 'selected' : '' }}>Serie</option>
-                    <option value="commercial" {{ request('type') == 'commercial' ? 'selected' : '' }}>Comercial</option>
-                    <option value="animation" {{ request('type') == 'animation' ? 'selected' : '' }}>Animación</option>
-                    <option value="videogame" {{ request('type') == 'videogame' ? 'selected' : '' }}>Videojuego</option>
-                </select>
-            </div>
-            <div class="min-w-[150px]">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Año</label>
-                <input type="number" name="year" value="{{ request('year') }}" 
-                       placeholder="Ej: 2023" 
-                       class="w-full border border-gray-300 rounded-lg px-3 py-2"
-                       min="1900" max="{{ date('Y') + 5 }}">
-            </div>
-            <div class="min-w-[150px]">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Ordenar</label>
-                <select name="sort" class="w-full border border-gray-300 rounded-lg px-3 py-2">
-                    <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Más recientes</option>
-                    <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Más antiguas</option>
-                    <option value="title" {{ request('sort') == 'title' ? 'selected' : '' }}>Título A-Z</option>
-                    <option value="actors" {{ request('sort') == 'actors' ? 'selected' : '' }}>Más actores</option>
-                </select>
-            </div>
-            <div>
-                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 h-[42px]">
-                    <i class="fas fa-filter mr-1"></i> Filtrar
-                </button>
-                <a href="{{ route('admin.works') }}" class="ml-2 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 h-[42px] inline-flex items-center">
-                    <i class="fas fa-times mr-1"></i> Limpiar
-                </a>
-            </div>
-        </form>
-    </div>
+<div class="bg-white rounded-lg shadow-md p-4 mb-6">
+    <form method="GET" action="{{ route('admin.works') }}" class="flex flex-wrap gap-4 items-end">
+        <div class="flex-1 min-w-[200px]">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Tipo</label>
+            <select name="type" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                <option value="">Todos los tipos</option>
+                <option value="movie" {{ request('type') == 'movie' ? 'selected' : '' }}>Película</option>
+                <option value="series" {{ request('type') == 'series' ? 'selected' : '' }}>Serie</option>
+                <option value="commercial" {{ request('type') == 'commercial' ? 'selected' : '' }}>Comercial</option>
+                <option value="animation" {{ request('type') == 'animation' ? 'selected' : '' }}>Animación</option>
+                <option value="videogame" {{ request('type') == 'videogame' ? 'selected' : '' }}>Videojuego</option>
+            </select>
+        </div>
+        <div class="min-w-[150px]">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Año</label>
+            <input type="number" name="year" value="{{ request('year') }}" 
+                   placeholder="Ej: 2023" 
+                   class="w-full border border-gray-300 rounded-lg px-3 py-2"
+                   min="1900" max="{{ date('Y') + 5 }}">
+        </div>
+        <div class="min-w-[150px]">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Ordenar</label>
+            <select name="sort" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Más recientes</option>
+                <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Más antiguas</option>
+                <option value="title" {{ request('sort') == 'title' ? 'selected' : '' }}>Título A-Z</option>
+                <option value="actors" {{ request('sort') == 'actors' ? 'selected' : '' }}>Más actores</option>
+            </select>
+        </div>
+        <div class="flex items-end space-x-2">
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200 flex items-center h-[42px]">
+                <i class="fas fa-filter mr-2"></i> Filtrar
+            </button>
+            <a href="{{ route('admin.works') }}" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition duration-200 flex items-center h-[42px]">
+                <i class="fas fa-times mr-2"></i> Limpiar
+            </a>
+        </div>
+    </form>
+</div>
 
     <!-- Lista de Obras -->
     <div class="bg-white rounded-lg shadow-md overflow-hidden">
@@ -127,7 +166,11 @@
                                         </div>
                                     @endif
                                     <div>
-                                        <div class="text-sm font-medium text-gray-900">{{ $work->title }}</div>
+                                        {{-- TÍTULO COMO LINK PARA VER --}}
+                                        <a href="{{ route('works.show', $work) }}" 
+                                           class="text-sm font-medium text-gray-900 hover:text-blue-600 transition duration-150">
+                                            {{ $work->title }}
+                                        </a>
                                         @if($work->description)
                                             <div class="text-sm text-gray-500 line-clamp-1 max-w-xs">
                                                 {{ Str::limit($work->description, 50) }}
@@ -174,33 +217,27 @@
                                 </span>
                             </td>
 
-                            <!-- Acciones -->
+                            <!-- Acciones - SOLO EDITAR Y ELIMINAR -->
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-    <div class="flex space-x-2">
-        {{-- Botón Ver --}}
-        <a href="{{ route('works.show', $work) }}" 
-           class="text-blue-600 hover:text-blue-900 bg-blue-100 hover:bg-blue-200 px-3 py-1 rounded text-sm">
-           Ver
-        </a>
-        
-        {{-- Botón Editar --}}
-        <a href="{{ route('admin.works.edit', $work) }}" 
-           class="text-yellow-600 hover:text-yellow-900 bg-yellow-100 hover:bg-yellow-200 px-3 py-1 rounded text-sm">
-           Editar
-        </a>
-        
-        {{-- Botón Eliminar --}}
-        <form action="{{ route('admin.works.destroy', $work) }}" method="POST" 
-              onsubmit="return confirm('¿Eliminar esta obra?');" class="inline">
-            @csrf
-            @method('DELETE')
-            <button type="submit" 
-                    class="text-red-600 hover:text-red-900 bg-red-100 hover:bg-red-200 px-3 py-1 rounded text-sm">
-                Eliminar
-            </button>
-        </form>
-    </div>
-</td>
+                                <div class="flex space-x-2">
+                                    {{-- Botón Editar --}}
+                                    <a href="{{ route('admin.works.edit', $work) }}" 
+                                       class="text-yellow-600 hover:text-yellow-900 bg-yellow-100 hover:bg-yellow-200 px-3 py-1 rounded text-sm transition duration-150">
+                                       Editar
+                                    </a>
+                                    
+                                    {{-- Botón Eliminar --}}
+                                    <form action="{{ route('admin.works.destroy', $work) }}" method="POST" 
+                                          onsubmit="return confirm('¿Eliminar esta obra?');" class="inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" 
+                                                class="text-red-600 hover:text-red-900 bg-red-100 hover:bg-red-200 px-3 py-1 rounded text-sm transition duration-150">
+                                            Eliminar
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
                         </tr>
                     @empty
                         <tr>

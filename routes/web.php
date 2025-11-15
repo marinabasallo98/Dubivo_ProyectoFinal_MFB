@@ -15,7 +15,6 @@ Route::get('/', function () {
 
 // Rutas públicas
 Route::get('/actors', [ActorController::class, 'index'])->name('actors.index');
-Route::get('/actors/{actor}', [ActorController::class, 'show'])->name('actors.show');
 Route::get('/schools', [SchoolController::class, 'index'])->name('schools.index');
 Route::get('/schools/{school}', [SchoolController::class, 'show'])->name('schools.show');
 Route::get('/works', [WorkController::class, 'index'])->name('works.index');
@@ -34,22 +33,25 @@ Route::get('/dashboard', function () {
 
 // Rutas que requieren autenticación
 Route::middleware(['auth'])->group(function () {
-    // Perfil de actor
+    // PERFIL DE ACTOR - debe ir ANTES de la ruta pública de actors.show
     Route::get('/actor/profile/create', [ActorController::class, 'create'])->name('actors.create');
     Route::post('/actor/profile', [ActorController::class, 'store'])->name('actors.store');
     Route::get('/actor/profile/{actor}/edit', [ActorController::class, 'edit'])->name('actors.edit');
     Route::put('/actor/profile/{actor}', [ActorController::class, 'update'])->name('actors.update');
     Route::delete('/actor/profile/{actor}', [ActorController::class, 'destroy'])->name('actors.destroy');
 
-    // Solicitudes
+    // SOLICITUDES - CORREGIDAS
     Route::get('/requests', [RequestController::class, 'index'])->name('requests.index');
-    Route::get('/actors/{actor}/contact', [RequestController::class, 'create'])->name('requests.create');
-    Route::post('/actors/{actor}/contact', [RequestController::class, 'store'])->name('requests.store');
+    
+    // Cambiar la ruta de create para evitar conflicto
+    Route::get('/contact-actor/{actor}', [RequestController::class, 'create'])->name('requests.create');
+    Route::post('/contact-actor/{actor}', [RequestController::class, 'store'])->name('requests.store');
+    
     Route::patch('/requests/{contactRequest}/{status}', [RequestController::class, 'updateStatus'])->name('requests.updateStatus');
     Route::delete('/requests/{contactRequest}', [RequestController::class, 'destroy'])->name('requests.destroy');
 
-    // Admin routes - SIN MIDDLEWARE
-    Route::prefix('admin')->middleware('auth')->group(function () {
+    // ADMIN ROUTES - SIN MIDDLEWARE DUPLICADO
+    Route::prefix('admin')->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
         // Escuelas
@@ -92,6 +94,9 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/schools/{school}/teachers/{actor}', [SchoolTeacherController::class, 'destroy'])->name('admin.schools.teachers.destroy');
     });
 });
+
+// RUTA PÚBLICA DE ACTORES - debe ir AL FINAL para evitar conflictos
+Route::get('/actors/{actor}', [ActorController::class, 'show'])->name('actors.show');
 
 // Rutas de autenticación de Laravel
 require __DIR__ . '/auth.php';

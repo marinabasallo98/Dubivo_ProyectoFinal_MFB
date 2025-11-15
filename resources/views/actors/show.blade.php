@@ -103,7 +103,7 @@
             <!-- Acciones -->
             @auth
                 @if(Auth::user()->role == 'client' || Auth::user()->role == 'admin')
-                    <a href="{{ route('requests.create', $actor) }}" 
+                    <a href="{{ route('requests.create', $actor->id) }}" 
                        class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-200 font-medium">
                         <i class="fas fa-envelope mr-2"></i>Contactar Actor
                     </a>

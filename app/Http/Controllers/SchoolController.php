@@ -15,6 +15,7 @@ class SchoolController extends Controller
 
     public function show(School $school)
 {
+    $school->loadCount('actors');
     $school->load(['actors.user', 'teacherActors.user']); 
     return view('schools.show', compact('school'));
 }

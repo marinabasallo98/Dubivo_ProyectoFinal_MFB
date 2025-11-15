@@ -52,6 +52,19 @@
         </div>
     </div>
 
+    <!-- Total Administradores -->
+    <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-red-500">
+        <div class="flex items-center">
+            <div class="bg-red-100 p-3 rounded-full">
+                <i class="fas fa-user-shield text-red-600 text-xl"></i>
+            </div>
+            <div class="ml-4">
+                <p class="text-sm font-medium text-gray-600">Administradores</p>
+                <p class="text-2xl font-bold text-gray-900">{{ $stats['total_admins'] }}</p>
+            </div>
+        </div>
+    </div>
+
         <!-- Total Escuelas -->
     <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-orange-500">
         <div class="flex items-center">
@@ -133,20 +146,6 @@
                 <div class="ml-4">
                     <h3 class="text-lg font-semibold text-gray-800">Gestionar Obras</h3>
                     <p class="text-gray-600 text-sm mt-1">Administrar películas y series</p>
-                </div>
-            </div>
-        </a>
-
-        <!-- Gestionar Usuarios -->
-        <a href="{{ route('admin.users') }}"
-            class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition duration-300 border border-gray-200">
-            <div class="flex items-center">
-                <div class="bg-orange-100 p-3 rounded-full">
-                    <i class="fas fa-users-cog text-orange-600 text-xl"></i>
-                </div>
-                <div class="ml-4">
-                    <h3 class="text-lg font-semibold text-gray-800">Gestionar Usuarios</h3>
-                    <p class="text-gray-600 text-sm mt-1">Administrar todos los usuarios del sistema</p>
                 </div>
             </div>
         </a>

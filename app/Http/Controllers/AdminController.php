@@ -13,8 +13,6 @@ use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
-    // ⚠️ NO USES CONSTRUCTOR CON MIDDLEWARE - causa el error
-
     public function dashboard()
     {
         // Verificación manual de admin
@@ -26,6 +24,7 @@ class AdminController extends Controller
             'total_users' => User::count(),
             'total_actors' => User::where('role', 'actor')->count(),
             'total_clients' => User::where('role', 'client')->count(),
+            'total_admins' => User::where('role', 'admin')->count(),
             'total_schools' => School::count(),
             'total_works' => Work::count(),
             'total_teacher_actors' => Actor::has('teachingSchools')->count(),

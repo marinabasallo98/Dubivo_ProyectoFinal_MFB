@@ -14,8 +14,8 @@ class Actor extends Model
         'bio',
         'photo',
         'audio_path',
-        'genders',
-        'voice_ages', 
+        'gender',
+        'voice_age', 
         'is_available',
         'voice_characteristics'
     ];
@@ -27,37 +27,51 @@ class Actor extends Model
         'voice_characteristics' => 'array',
     ];
 
-    // OPCIONES DISPONIBLES
     public static function getGenderOptions()
-    {
-        return ['Masculino', 'Femenino', 'Otro'];
-    }
+{
+    return [
+        'male' => 'Masculino',
+        'female' => 'Femenino', 
+        'other' => 'Otro'
+    ];
+}
 
     public static function getVoiceAgeOptions()
-    {
-        return ['Niño', 'Adolescente', 'Adulto joven', 'Adulto', 'Anciano', 'Atipada'];
-    }
+{
+    return [
+        'child' => 'Niño',
+        'teen' => 'Adolescente', 
+        'young_adult' => 'Adulto joven',
+        'adult' => 'Adulto',
+        'senior' => 'Anciano',
+        'variety' => 'Atipada'
+    ];
+}
 
-    // SCOPES PARA FILTROS
-    public function scopeFilterByVoiceAges($query, $voiceAges)
-    {
-        if ($voiceAges && count($voiceAges) > 0) {
+
+   public function scopeFilterByVoiceAges($query, $voiceAges)
+{
+    if ($voiceAges && count($voiceAges) > 0) {
+        $query->where(function ($q) use ($voiceAges) {
             foreach ($voiceAges as $age) {
-                $query->whereJsonContains('voice_ages', $age);
+                $q->orWhereJsonContains('voice_ages', $age);
             }
-        }
-        return $query;
+        });
     }
+    return $query;
+}
 
     public function scopeFilterByGenders($query, $genders)
-    {
-        if ($genders && count($genders) > 0) {
+{
+    if ($genders && count($genders) > 0) {
+        $query->where(function ($q) use ($genders) {
             foreach ($genders as $gender) {
-                $query->whereJsonContains('genders', $gender);
+                $q->orWhereJsonContains('genders', $gender);
             }
-        }
-        return $query;
+        });
     }
+    return $query;
+}
 
     public function scopeFilterByAvailability($query, $availability)
     {

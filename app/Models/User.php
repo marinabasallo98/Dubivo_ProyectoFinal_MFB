@@ -10,6 +10,7 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+    //Campos que podemos llenar
     protected $fillable = [
         'name',
         'email',
@@ -17,11 +18,13 @@ class User extends Authenticatable
         'role',
     ];
 
+    //Campos ocultos (no los mostramos en JSON)
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
+    //Conversiones automáticas
     protected function casts(): array
     {
         return [
@@ -30,7 +33,7 @@ class User extends Authenticatable
         ];
     }
 
-    // RELACIONES
+    //Relaciones
     public function actorProfile()
     {
         return $this->hasOne(Actor::class);
@@ -41,8 +44,7 @@ class User extends Authenticatable
         return $this->hasManyThrough(School::class, Actor::class);
     }
 
-
-    // SCOPES PARA ROLES
+    //Filtros por rol
     public function scopeActors($query)
     {
         return $query->where('role', 'actor');
@@ -58,7 +60,7 @@ class User extends Authenticatable
         return $query->where('role', 'admin');
     }
 
-    // HELPERS
+    //Verificamos roles fácilmente
     public function isAdmin()
     {
         return $this->role === 'admin';
@@ -73,6 +75,4 @@ class User extends Authenticatable
     {
         return $this->role === 'client';
     }
-
-
 }

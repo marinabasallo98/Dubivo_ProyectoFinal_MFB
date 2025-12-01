@@ -1,4 +1,3 @@
-
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -7,22 +6,18 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+    //Creamos tabla pivote para actores y escuelas
     public function up(): void
     {
-Schema::create('actor_school', function (Blueprint $table) {
-    $table->id();
-    $table->foreignId('actor_id')->constrained()->onDelete('cascade');
-    $table->foreignId('school_id')->constrained()->onDelete('cascade');
-    $table->timestamps();
-});
-}
+        Schema::create('actor_school', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('actor_id')->constrained()->onDelete('cascade');
+            $table->foreignId('school_id')->constrained()->onDelete('cascade');
+            $table->timestamps();
+        });
+    }
 
-    /**
-     * Reverse the migrations.
-     */
+    //Eliminamos la tabla pivote
     public function down(): void
     {
         Schema::dropIfExists('actor_school');

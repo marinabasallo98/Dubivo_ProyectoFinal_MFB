@@ -3,35 +3,31 @@
 namespace App\Http\Controllers;
 
 use App\Models\Actor;
-use App\Models\School;
-use App\Models\Work;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        // Verificar si el usuario está autenticado
+        //Si no hay usuario logueado, vamos a la página principal
         if (!Auth::check()) {
-            // Si no está autenticado, redirigir a la página principal
-            return redirect()->route('home');
+            return redirect('/');
         }
 
         $user = Auth::user();
         
-        // Redirigir admin al panel de administración
+        //Los administradores van a su panel especial
         if ($user->role === 'admin') {
             return redirect()->route('admin.dashboard');
         }
 
-        // Para actores y clientes, mostrar dashboard con contenido
-        $featuredActors = Actor::with(['user', 'works', 'schools'])
-            ->where('is_available', true)
-            ->orderByDesc('created_at')
-            ->take(3)
+        //Para actores y clientes, mostramos actores destacados
+        $featuredActors = Actor::where('is_available', true)
+            ->with(['user', 'works'])
+            ->latest()
+            ->limit(3)
             ->get();
 
-        return view('dashboard', compact('featuredActors', 'user'));
+        return view('dashboard', compact('user', 'featuredActors'));
     }
 }

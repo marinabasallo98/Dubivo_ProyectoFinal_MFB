@@ -9,14 +9,14 @@ use Illuminate\Support\Facades\Auth;
 
 class SchoolTeacherController extends Controller
 {
-    // Mostrar formulario para agregar profesor
+    //Mostramos el formulario para agregar profesor
     public function create(School $school)
     {
         if (Auth::user()->role != 'admin') {
             abort(403, 'No autorizado.');
         }
 
-        // Actores que no son aún profesores en esta escuela
+        //Buscamos actores que no sean profesores aquí
         $availableActors = Actor::whereDoesntHave('teachingSchools', function($query) use ($school) {
             $query->where('school_id', $school->id);
         })->with('user')->get();
@@ -24,7 +24,7 @@ class SchoolTeacherController extends Controller
         return view('admin.schools.add-teacher', compact('school', 'availableActors'));
     }
 
-    // Guardar nuevo profesor
+    //Guardamos un nuevo profesor
     public function store(Request $request, School $school)
     {
         if (Auth::user()->role != 'admin') {
@@ -35,11 +35,22 @@ class SchoolTeacherController extends Controller
             'actor_id' => 'required|exists:actors,id',
             'subject' => 'required|string|max:255',
             'teaching_bio' => 'nullable|string|max:1000'
+        ], [
+            //Mensajes de validación en español
+            'required' => 'El campo :attribute es obligatorio.',
+            'exists' => 'El actor seleccionado no existe.',
+            'string' => 'El campo :attribute debe ser texto.',
+            'max' => 'El campo :attribute no puede tener más de :max caracteres.',
+        ], [
+            //Nombres de campos en español
+            'actor_id' => 'actor',
+            'subject' => 'materia',
+            'teaching_bio' => 'biografía docente',
         ]);
 
-        // Verificar que no sea ya profesor
+        //Verificamos que no sea ya profesor
         if ($school->teacherActors()->where('actor_id', $validated['actor_id'])->exists()) {
-            return redirect()->back()->with('error', 'Este actor ya es profesor en esta escuela.');
+            return redirect()->back()->with('error', 'Este actor ya es profesor aquí.');
         }
 
         $school->teacherActors()->attach($validated['actor_id'], [
@@ -48,10 +59,10 @@ class SchoolTeacherController extends Controller
         ]);
 
         return redirect()->route('schools.show', $school)
-                        ->with('success', 'Profesor agregado exitosamente.');
+                        ->with('success', 'Profesor agregado.');
     }
 
-    // Editar información de profesor
+    //Mostramos formulario para editar profesor
     public function edit(School $school, Actor $actor)
     {
         if (Auth::user()->role != 'admin') {
@@ -67,7 +78,7 @@ class SchoolTeacherController extends Controller
         return view('admin.schools.edit-teacher', compact('school', 'actor', 'teacherInfo'));
     }
 
-    // Actualizar profesor
+    //Actualizamos la información del profesor
     public function update(Request $request, School $school, Actor $actor)
     {
         if (Auth::user()->role != 'admin') {
@@ -78,15 +89,26 @@ class SchoolTeacherController extends Controller
             'subject' => 'required|string|max:255',
             'teaching_bio' => 'nullable|string|max:1000',
             'is_active_teacher' => 'sometimes|boolean'
+        ], [
+            //Mensajes de validación en español
+            'required' => 'El campo :attribute es obligatorio.',
+            'string' => 'El campo :attribute debe ser texto.',
+            'max' => 'El campo :attribute no puede tener más de :max caracteres.',
+            'boolean' => 'El campo :attribute debe ser sí o no.',
+        ], [
+            //Nombres de campos en español
+            'subject' => 'materia',
+            'teaching_bio' => 'biografía docente',
+            'is_active_teacher' => 'profesor activo',
         ]);
 
         $school->teacherActors()->updateExistingPivot($actor->id, $validated);
 
         return redirect()->route('schools.show', $school)
-                        ->with('success', 'Información de profesor actualizada.');
+                        ->with('success', 'Información actualizada.');
     }
 
-    // Eliminar profesor
+    //Eliminamos un profesor
     public function destroy(School $school, Actor $actor)
     {
         if (Auth::user()->role != 'admin') {
@@ -96,35 +118,50 @@ class SchoolTeacherController extends Controller
         $school->teacherActors()->detach($actor->id);
 
         return redirect()->route('schools.show', $school)
-                        ->with('success', 'Profesor removido exitosamente.');
+                        ->with('success', 'Profesor removido.');
     }
+
+    //Manejamos profesores desde el panel de admin
     public function manage(Request $request, Actor $actor)
-{
-    if (Auth::user()->role != 'admin') {
-        abort(403, 'No autorizado.');
+    {
+        if (Auth::user()->role != 'admin') {
+            abort(403, 'No autorizado.');
+        }
+
+        $validated = $request->validate([
+            'school_id' => 'required|exists:schools,id',
+            'subject' => 'required|string|max:255',
+            'teaching_bio' => 'nullable|string|max:1000',
+            'action' => 'required|in:add,update,remove'
+        ], [
+            //Mensajes de validación en español
+            'required' => 'El campo :attribute es obligatorio.',
+            'exists' => 'La escuela seleccionada no existe.',
+            'string' => 'El campo :attribute debe ser texto.',
+            'max' => 'El campo :attribute no puede tener más de :max caracteres.',
+            'in' => 'La acción seleccionada no es válida.',
+        ], [
+            //Nombres de campos en español
+            'school_id' => 'escuela',
+            'subject' => 'materia',
+            'teaching_bio' => 'biografía docente',
+            'action' => 'acción',
+        ]);
+
+        if ($request->action == 'remove') {
+            $actor->teachingSchools()->detach($validated['school_id']);
+            return back()->with('success', 'Profesor removido.');
+        }
+
+        //Agregamos o actualizamos
+        $actor->teachingSchools()->syncWithoutDetaching([
+            $validated['school_id'] => [
+                'subject' => $validated['subject'],
+                'teaching_bio' => $validated['teaching_bio']
+            ]
+        ]);
+
+        $message = $request->action == 'add' ? 'Profesor agregado.' : 'Información actualizada.';
+        return back()->with('success', $message);
     }
-
-    $validated = $request->validate([
-        'school_id' => 'required|exists:schools,id',
-        'subject' => 'required|string|max:255',
-        'teaching_bio' => 'nullable|string|max:1000',
-        'action' => 'required|in:add,update,remove'
-    ]);
-
-    if ($request->action == 'remove') {
-        $actor->teachingSchools()->detach($validated['school_id']);
-        return back()->with('success', 'Profesor removido exitosamente.');
-    }
-
-    // Add or update
-    $actor->teachingSchools()->syncWithoutDetaching([
-        $validated['school_id'] => [
-            'subject' => $validated['subject'],
-            'teaching_bio' => $validated['teaching_bio']
-        ]
-    ]);
-
-    $message = $request->action == 'add' ? 'Profesor agregado exitosamente.' : 'Información actualizada.';
-    return back()->with('success', $message);
-}
 }

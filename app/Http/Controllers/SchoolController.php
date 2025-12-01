@@ -3,22 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Models\School;
-use Illuminate\Http\Request;
 
 class SchoolController extends Controller
 {
+    //Listamos todas las escuelas con sus estadísticas
     public function index()
     {
-         $schools = School::withCount('actors')->paginate(12);
-    $cities = School::whereNotNull('city')->distinct()->pluck('city')->sort();
-    
-    return view('schools.index', compact('schools', 'cities'));
+        $schools = School::withCount('actors')->paginate(12);
+        $cities = School::distinct('city')->orderBy('city')->pluck('city');
+        
+        return view('schools.index', compact('schools', 'cities'));
     }
 
+    //Mostramos una escuela en detalle con sus actores
     public function show(School $school)
-{
-    $school->loadCount('actors');
-    $school->load(['actors.user', 'teacherActors.user']); 
-    return view('schools.show', compact('school'));
-}
+    {
+        //Cargamos actores y profesores de esta escuela
+        $school->load(['actors.user', 'teacherActors.user']);
+        $school->loadCount('actors');
+        
+        return view('schools.show', compact('school'));
+    }
 }

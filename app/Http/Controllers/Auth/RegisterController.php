@@ -7,46 +7,60 @@ use App\Models\User;
 use App\Models\Actor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 
 class RegisterController extends Controller
 {
-    // Mostrar formulario para actores
-    public function showActorRegistrationForm()
+    //Mostramos el formulario para actores
+    public function showActorForm()
     {
         return view('auth.register-actor');
     }
 
-    // Mostrar formulario para clientes
-    public function showClientRegistrationForm()
+    //Mostramos el formulario para clientes
+    public function showClientForm()
     {
         return view('auth.register-client');
     }
 
-    // Registrar actor
+    //Procesamos el registro de un actor
     public function registerActor(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        //Validamos los datos recibidos
+        $data = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:8|confirmed'
+        ], [
+            //Mensajes de validación en español
+            'required' => 'El campo :attribute es obligatorio.',
+            'string' => 'El campo :attribute debe ser texto.',
+            'email' => 'El campo :attribute debe ser un email válido.',
+            'unique' => 'Este :attribute ya está registrado.',
+            'min' => [
+                'string' => 'El campo :attribute debe tener al menos :min caracteres.',
+            ],
+            'max' => [
+                'string' => 'El campo :attribute no puede tener más de :max caracteres.',
+            ],
+            'confirmed' => 'Las contraseñas no coinciden.',
+        ], [
+            //Nombres de campos en español
+            'name' => 'nombre',
+            'email' => 'email',
+            'password' => 'contraseña',
         ]);
 
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-
-        // Crear usuario actor
+        //Creamos el usuario actor
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
             'role' => 'actor',
         ]);
 
-        // Crear perfil de actor automáticamente y guardar la variable
-        $actor = Actor::create([
+        //Creamos su perfil de actor vacío
+        Actor::create([
             'user_id' => $user->id,
             'bio' => null,
             'genders' => [],
@@ -54,36 +68,51 @@ class RegisterController extends Controller
             'is_available' => true,
         ]);
 
-        // Login automático (usando Auth facade)
+        //Logueamos al usuario automáticamente
         Auth::login($user);
 
-        return redirect()->route('actors.edit', $actor)->with('success', '¡Perfil de actor creado! Completa tu información adicional.');
+        //Lo enviamos a completar su perfil
+        return redirect()->route('actors.edit', $user->actorProfile)
+            ->with('success', '¡Cuenta creada! Ahora completa tu perfil.');
     }
 
-    // Registrar cliente
+    //Procesamos el registro de un cliente
     public function registerClient(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $data = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:8|confirmed'
+        ], [
+            //Mensajes de validación en español (los mismos que para actor)
+            'required' => 'El campo :attribute es obligatorio.',
+            'string' => 'El campo :attribute debe ser texto.',
+            'email' => 'El campo :attribute debe ser un email válido.',
+            'unique' => 'Este :attribute ya está registrado.',
+            'min' => [
+                'string' => 'El campo :attribute debe tener al menos :min caracteres.',
+            ],
+            'max' => [
+                'string' => 'El campo :attribute no puede tener más de :max caracteres.',
+            ],
+            'confirmed' => 'Las contraseñas no coinciden.',
+        ], [
+            //Nombres de campos en español
+            'name' => 'nombre',
+            'email' => 'email',
+            'password' => 'contraseña',
         ]);
 
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-
-        // Crear usuario cliente
+        //Creamos el usuario cliente
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
             'role' => 'client',
         ]);
 
-        // Login automático (usando Auth facade)
-        Auth::login($user); // ← CORREGIDO
+        Auth::login($user);
 
-        return redirect('/dashboard')->with('success', '¡Cuenta de cliente creada exitosamente!');
+        return redirect('/dashboard')->with('success', '¡Bienvenido!');
     }
 }

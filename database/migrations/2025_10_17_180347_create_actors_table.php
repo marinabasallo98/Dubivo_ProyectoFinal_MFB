@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    //Creamos la tabla de actores
     public function up(): void
     {
         Schema::create('actors', function (Blueprint $table) {
@@ -15,19 +16,21 @@ return new class extends Migration
             $table->string('photo')->nullable();
             $table->string('audio_path')->nullable();
             
-            // MÚLTIPLE SELECCIÓN (JSON)
-            $table->json('genders')->nullable(); // ['Masculino', 'Femenino']
-            $table->json('voice_ages')->nullable(); // ['Niño', 'Adolescente', 'Adulto joven']
+            //Selección múltiple (guardamos como JSON)
+            $table->json('genders')->nullable(); //Ej: ['Masculino', 'Femenino']
+            $table->json('voice_ages')->nullable(); //Ej: ['Niño', 'Adolescente']
             
-            // BOOLEANO (sí/no)
+            //Disponibilidad del actor
             $table->boolean('is_available')->default(true);
             
+            //Características de voz
             $table->json('voice_characteristics')->nullable();
             
             $table->timestamps();
         });
     }
 
+    //Eliminamos la tabla de actores
     public function down(): void
     {
         Schema::dropIfExists('actors');

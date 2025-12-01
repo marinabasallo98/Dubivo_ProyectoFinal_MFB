@@ -6,24 +6,19 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+    //Creamos tabla pivote para actores y obras
     public function up(): void
     {
+        Schema::create('actor_work', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('actor_id')->constrained()->onDelete('cascade');
+            $table->foreignId('work_id')->constrained()->onDelete('cascade');
+            $table->string('character_name')->nullable(); //Personaje que interpretó
+            $table->timestamps();
+        });
+    }
 
-Schema::create('actor_work', function (Blueprint $table) {
-    $table->id();
-    $table->foreignId('actor_id')->constrained()->onDelete('cascade');
-    $table->foreignId('work_id')->constrained()->onDelete('cascade');
-    $table->string('character_name')->nullable(); // nombre del personaje que hizo
-    $table->timestamps();
-});
-}
-
-    /**
-     * Reverse the migrations.
-     */
+    //Eliminamos la tabla pivote
     public function down(): void
     {
         Schema::dropIfExists('actor_work');

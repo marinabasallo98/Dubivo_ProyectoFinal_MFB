@@ -6,11 +6,10 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+    //Creamos tablas para trabajos en cola
     public function up(): void
     {
+        //Trabajos pendientes
         Schema::create('jobs', function (Blueprint $table) {
             $table->id();
             $table->string('queue')->index();
@@ -21,6 +20,7 @@ return new class extends Migration
             $table->unsignedInteger('created_at');
         });
 
+        //Lotes de trabajos
         Schema::create('job_batches', function (Blueprint $table) {
             $table->string('id')->primary();
             $table->string('name');
@@ -34,6 +34,7 @@ return new class extends Migration
             $table->integer('finished_at')->nullable();
         });
 
+        //Trabajos fallidos
         Schema::create('failed_jobs', function (Blueprint $table) {
             $table->id();
             $table->string('uuid')->unique();
@@ -45,9 +46,7 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
+    //Eliminamos las tablas de trabajos
     public function down(): void
     {
         Schema::dropIfExists('jobs');

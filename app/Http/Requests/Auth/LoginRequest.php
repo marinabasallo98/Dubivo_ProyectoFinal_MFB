@@ -11,19 +11,13 @@ use Illuminate\Validation\ValidationException;
 
 class LoginRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
+    //Permitimos que cualquier usuario haga esta solicitud
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
+    //Definimos las reglas de validación
     public function rules(): array
     {
         return [
@@ -32,11 +26,17 @@ class LoginRequest extends FormRequest
         ];
     }
 
-    /**
-     * Attempt to authenticate the request's credentials.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
+    //Personalizamos los mensajes de error en español
+    public function messages(): array
+    {
+        return [
+            'email.required' => 'El email es obligatorio.',
+            'email.email' => 'Debe ser un email válido.',
+            'password.required' => 'La contraseña es obligatoria.',
+        ];
+    }
+
+    //Intentamos autenticar al usuario
     public function authenticate(): void
     {
         $this->ensureIsNotRateLimited();
@@ -44,19 +44,16 @@ class LoginRequest extends FormRequest
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
+            //Mostramos error en español si las credenciales fallan
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'email' => 'Email o contraseña incorrectos.',
             ]);
         }
 
         RateLimiter::clear($this->throttleKey());
     }
 
-    /**
-     * Ensure the login request is not rate limited.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
+    //Verificamos que no haya demasiados intentos fallidos
     public function ensureIsNotRateLimited(): void
     {
         if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
@@ -65,19 +62,13 @@ class LoginRequest extends FormRequest
 
         event(new Lockout($this));
 
-        $seconds = RateLimiter::availableIn($this->throttleKey());
-
+        //Mensaje simple en español para demasiados intentos
         throw ValidationException::withMessages([
-            'email' => trans('auth.throttle', [
-                'seconds' => $seconds,
-                'minutes' => ceil($seconds / 60),
-            ]),
+            'email' => 'Demasiados intentos. Inténtalo de nuevo más tarde.',
         ]);
     }
 
-    /**
-     * Get the rate limiting throttle key for the request.
-     */
+    //Generamos una clave única para limitar intentos
     public function throttleKey(): string
     {
         return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());

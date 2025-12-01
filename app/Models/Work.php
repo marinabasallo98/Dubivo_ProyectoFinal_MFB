@@ -9,6 +9,7 @@ class Work extends Model
 {
     use HasFactory;
 
+    //Campos que podemos llenar
     protected $fillable = [
         'title',
         'type',
@@ -17,15 +18,15 @@ class Work extends Model
         'poster'
     ];
 
-    // RELACIONES
+    //Relación con actores
     public function actors()
     {
         return $this->belongsToMany(Actor::class, 'actor_work')
-                    ->withPivot('character_name')
-                    ->withTimestamps();
+            ->withPivot('character_name')
+            ->withTimestamps();
     }
 
-    // SCOPES
+    //Filtros por tipo
     public function scopeMovies($query)
     {
         return $query->where('type', 'movie');
@@ -40,32 +41,38 @@ class Work extends Model
     {
         return $query->where('type', 'animation');
     }
+
     public function scopeCommercial($query)
     {
         return $query->where('type', 'commercial');
     }
+
     public function scopeVideogame($query)
     {
         return $query->where('type', 'videogame');
     }
+
     public function scopeDocumentary($query)
     {
         return $query->where('type', 'documentary');
     }
+
     public function scopeOther($query)
     {
         return $query->where('type', 'other');
     }
+
+    //Opciones de tipo para formularios
     public static function getTypeOptions()
-{
-    return [
-        'movie' => 'Película',
-        'series' => 'Serie',
-        'commercial' => 'Publicidad', 
-        'animation' => 'Animación',
-        'videogame' => 'Videojuego',
-        'documentary' => 'Documental',
-        'other' => 'Otro',
-    ];
-}
+    {
+        return [
+            'movie' => 'Película',
+            'series' => 'Serie',
+            'commercial' => 'Publicidad', 
+            'animation' => 'Animación',
+            'videogame' => 'Videojuego',
+            'documentary' => 'Documental',
+            'other' => 'Otro',
+        ];
+    }
 }

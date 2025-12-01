@@ -6,26 +6,22 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+    //Creamos la tabla de escuelas
     public function up(): void
     {
-    Schema::create('schools', function (Blueprint $table) {
-        $table->id();
-        $table->string('name');
-        $table->string('city')->nullable();
-        $table->text('description')->nullable();
-        $table->integer('founded_year')->nullable();
-        $table->string('website')->nullable();
-        $table->string('logo')->nullable();
-        $table->timestamps();
-    });
+        Schema::create('schools', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('city')->nullable();
+            $table->text('description')->nullable();
+            $table->integer('founded_year')->nullable();
+            $table->string('website')->nullable();
+            $table->string('logo')->nullable();
+            $table->timestamps();
+        });
     }
 
-    /**
-     * Reverse the migrations.
-     */
+    //Eliminamos la tabla de escuelas
     public function down(): void
     {
         Schema::dropIfExists('schools');

@@ -6,10 +6,7 @@ export default defineConfig({
         laravel({
             input: [
                 'resources/css/app.css',
-                'resources/js/app.js',
-                'resources/js/components/ActorFilters.js',
-                'resources/js/components/SchoolFilters.js', 
-                'resources/js/components/WorkFilters.js',
+                'resources/js/app.js'
             ],
             refresh: true,
         }),

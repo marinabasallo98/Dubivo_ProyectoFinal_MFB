@@ -4,21 +4,21 @@
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
-    
+
     <!-- Header diferenciado según rol -->
     @if(isset($isAdmin) && $isAdmin)
     <!-- Header Admin -->
-    <div class="bg-white shadow-md p-6 mb-6">
+    <div class="bg-white shadow-md p-6 mb-6 rounded-lg">
         <div class="border-b border-gray-200 pb-4">
             <div class="flex items-center justify-between">
                 <div class="flex items-center">
                     @if($actor->photo)
                     <img src="{{ asset('storage/' . $actor->photo) }}"
                         alt="{{ $actor->user->name }}"
-                        class="w-16 h-16 object-cover mr-4 rounded">
+                        class="w-16 h-16 object-cover mr-4 rounded-lg">
                     @else
-                    <div class="w-16 h-16 bg-gray-200 flex items-center justify-center mr-4 rounded">
-                        <i class="fas fa-user text-gray-400 text-xl"></i>
+                    <div class="w-16 h-16 bg-gradient-to-br from-naranja-vibrante to-ambar flex items-center justify-center mr-4 rounded-lg">
+                        <i class="fas fa-user text-white text-xl"></i>
                     </div>
                     @endif
                     <div>
@@ -40,14 +40,14 @@
 
     {{-- Mensaje de bienvenida --}}
     @if(session('success') && str_contains(session('success'), 'Completa tu información adicional'))
-    <div class="bg-azul-profundo bg-opacity-10 p-4 mb-6 border border-azul-profundo border-opacity-20">
+    <div class="bg-gradient-to-r from-naranja-vibrante/10 to-ambar/10 p-4 mb-6 border border-ambar/20 rounded-lg">
         <div class="flex">
             <div class="flex-shrink-0">
-                <i class="fas fa-star text-azul-profundo text-xl"></i>
+                <i class="fas fa-star text-naranja-vibrante text-xl"></i>
             </div>
             <div class="ml-3">
-                <h3 class="text-sm font-medium text-azul-profundo">¡Bienvenido a Dubivo!</h3>
-                <div class="mt-2 text-sm text-azul-profundo">
+                <h3 class="text-sm font-medium text-naranja-vibrante">¡Bienvenido a Dubivo!</h3>
+                <div class="mt-2 text-sm text-naranja-vibrante">
                     <p>Completa tu perfil profesional para que los clientes puedan encontrarte.</p>
                 </div>
             </div>
@@ -59,7 +59,7 @@
     <div class="flex flex-col lg:flex-row gap-6">
         <!-- Formulario Principal -->
         <div class="{{ isset($isAdmin) && $isAdmin ? 'w-full' : 'lg:w-3/4' }}">
-            <div class="bg-white shadow-md p-6 border border-gray-200">
+            <div class="bg-white shadow-md p-6 border border-gray-200 rounded-lg">
                 @if(!isset($isAdmin))
                 <div class="border-b border-gray-200 pb-4 mb-6">
                     <h2 class="text-2xl font-semibold text-gray-800">Actualiza tu información</h2>
@@ -67,8 +67,8 @@
                 </div>
                 @endif
 
-                <form action="{{ isset($isAdmin) && $isAdmin ? route('admin.actors.update', $actor) : route('actors.update', $actor) }}" 
-                      method="POST" enctype="multipart/form-data" class="space-y-6">
+                <form action="{{ isset($isAdmin) && $isAdmin ? route('admin.actors.update', $actor) : route('actors.update', $actor) }}"
+                    method="POST" enctype="multipart/form-data" class="space-y-6">
                     @csrf
                     @method('PUT')
 
@@ -83,50 +83,50 @@
                             <!-- Géneros -->
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-3">
-                                    Géneros que puede{{ !isset($isAdmin) ? 's' : '' }} interpretar 
+                                    Géneros que puede{{ !isset($isAdmin) ? 's' : '' }} interpretar
                                     <span class="text-rojo-intenso">*</span>
                                 </label>
-                                <div class="filter-scroll-container border border-gray-200 bg-gray-50">
+                                <div class="filter-scroll-container border border-gray-200 bg-gray-50 rounded-lg">
                                     @php
-                                        $currentGenders = is_array($actor->genders) ? $actor->genders : json_decode($actor->genders, true) ?? [];
-                                        $currentGenders = old('genders', $currentGenders);
+                                    $currentGenders = is_array($actor->genders) ? $actor->genders : json_decode($actor->genders, true) ?? [];
+                                    $currentGenders = old('genders', $currentGenders);
                                     @endphp
                                     @foreach($genders as $gender)
-                                    <label class="flex items-center p-3 border-b border-gray-100 last:border-b-0 hover:bg-gray-100 cursor-pointer transition duration-150">
+                                    <label class="flex items-center p-3 border-b border-gray-100 last:border-b-0 hover:bg-amber-50 cursor-pointer transition duration-150">
                                         <input type="checkbox" name="genders[]" value="{{ $gender }}"
                                             {{ in_array($gender, $currentGenders) ? 'checked' : '' }}
-                                            class="border-gray-300 text-rosa-electrico focus:ring-rosa-electrico">
+                                            class="border-gray-300 text-naranja-vibrante focus:ring-naranja-vibrante focus:ring-2">
                                         <span class="ml-3 text-sm font-medium text-gray-700">{{ $gender }}</span>
                                     </label>
                                     @endforeach
                                 </div>
                                 @error('genders')
-                                    <p class="text-rojo-intenso text-sm mt-1">{{ $message }}</p>
+                                <p class="text-rojo-intenso text-sm mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
 
                             <!-- Edades Vocales -->
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-3">
-                                    Edades vocales que puede{{ !isset($isAdmin) ? 's' : '' }} interpretar 
+                                    Edades vocales que puede{{ !isset($isAdmin) ? 's' : '' }} interpretar
                                     <span class="text-rojo-intenso">*</span>
                                 </label>
-                                <div class="filter-scroll-container border border-gray-200 bg-gray-50">
+                                <div class="filter-scroll-container border border-gray-200 bg-gray-50 rounded-lg">
                                     @php
-                                        $currentVoiceAges = is_array($actor->voice_ages) ? $actor->voice_ages : json_decode($actor->voice_ages, true) ?? [];
-                                        $currentVoiceAges = old('voice_ages', $currentVoiceAges);
+                                    $currentVoiceAges = is_array($actor->voice_ages) ? $actor->voice_ages : json_decode($actor->voice_ages, true) ?? [];
+                                    $currentVoiceAges = old('voice_ages', $currentVoiceAges);
                                     @endphp
                                     @foreach($voiceAges as $age)
-                                    <label class="flex items-center p-3 border-b border-gray-100 last:border-b-0 hover:bg-gray-100 cursor-pointer transition duration-150">
+                                    <label class="flex items-center p-3 border-b border-gray-100 last:border-b-0 hover:bg-naranja-vibrante/5 cursor-pointer transition duration-150">
                                         <input type="checkbox" name="voice_ages[]" value="{{ $age }}"
                                             {{ in_array($age, $currentVoiceAges) ? 'checked' : '' }}
-                                            class="border-gray-300 text-naranja-vibrante focus:ring-naranja-vibrante">
+                                            class="border-gray-300 text-naranja-vibrante focus:ring-naranja-vibrante focus:ring-2">
                                         <span class="ml-3 text-sm font-medium text-gray-700">{{ $age }}</span>
                                     </label>
                                     @endforeach
                                 </div>
                                 @error('voice_ages')
-                                    <p class="text-rojo-intenso text-sm mt-1">{{ $message }}</p>
+                                <p class="text-rojo-intenso text-sm mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
                         </div>
@@ -139,36 +139,61 @@
                                     Biografía
                                 </label>
                                 <textarea name="bio" id="bio" rows="6"
-                                    class="w-full border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-azul-profundo focus:border-azul-profundo transition duration-200"
+                                    class="w-full border border-gray-300 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-rosa-electrico focus:border-rosa-electrico transition duration-200"
                                     placeholder="{{ !isset($isAdmin) ? 'Cuéntanos sobre tu experiencia, formación y especialidades...' : 'Biografía profesional del actor...' }}">{{ old('bio', $actor->bio) }}</textarea>
                                 @error('bio')
-                                    <p class="text-rojo-intenso text-sm mt-1">{{ $message }}</p>
+                                <p class="text-rojo-intenso text-sm mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
 
                             <!-- Disponibilidad -->
-                            <div class="p-4 border border-gray-200 bg-gray-50">
+                            <div class="p-4 border border-gray-200 bg-gray-50 rounded-lg">
                                 <label class="block text-sm font-medium text-gray-700 mb-3">
                                     Estado de disponibilidad
                                 </label>
-                                <div class="flex items-center space-x-4">
-                                    <button type="button" 
-                                            id="availabilityToggle"
-                                            class="relative inline-flex h-8 w-16 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 {{ old('is_available', $actor->is_available) ? 'bg-verde-menta focus:ring-verde-menta' : 'bg-gray-300 focus:ring-gray-400' }}">
-                                        <span class="inline-block h-6 w-6 transform bg-white rounded-full shadow-lg transition-transform duration-200 {{ old('is_available', $actor->is_available) ? 'translate-x-9' : 'translate-x-1' }}"></span>
-                                    </button>
-                                    <input type="hidden" name="is_available" id="availabilityInput" value="{{ old('is_available', $actor->is_available) ? '1' : '0' }}">
-                                    <div>
-                                        <span class="text-sm font-medium text-gray-700 block" id="availabilityText">
-                                            {{ old('is_available', $actor->is_available) ? 'Disponible' : 'No disponible' }}
-                                        </span>
-                                        <span class="text-xs text-gray-500" id="availabilitySubtext">
-                                            {{ old('is_available', $actor->is_available) ? 'Los clientes pueden contactarte' : 'No aparecerás en búsquedas' }}
-                                        </span>
-                                    </div>
+
+                                <div class="space-y-3">
+                                    @php
+                                    // Calcular estado actual
+                                    $currentAvailability = old('is_available', $actor->is_available);
+                                    // Convertir a booleano
+                                    if (is_string($currentAvailability)) {
+                                    $currentAvailability = $currentAvailability === '1' || $currentAvailability === 'true';
+                                    }
+                                    $currentAvailability = (bool) $currentAvailability;
+                                    @endphp
+
+                                    <!-- Opción Disponible -->
+                                    <label class="flex items-center p-3 border {{ $currentAvailability ? 'border-verde-menta border-2 bg-green-50' : 'border-gray-300' }} rounded-lg hover:bg-green-50 cursor-pointer transition duration-200">
+                                        <input type="radio"
+                                            name="is_available"
+                                            value="1"
+                                            class="h-5 w-5 text-verde-menta focus:ring-verde-menta border-gray-300"
+                                            {{ $currentAvailability ? 'checked' : '' }}>
+                                        <div class="ml-3 flex items-center">
+                                            <div class="h-3 w-3 rounded-full bg-verde-menta mr-2"></div>
+                                            <span class="text-sm font-medium text-gray-700">Disponible</span>
+                                        </div>
+                                        <span class="ml-auto text-xs text-gray-500">Aparecerás en búsquedas</span>
+                                    </label>
+
+                                    <!-- Opción No Disponible -->
+                                    <label class="flex items-center p-3 border {{ !$currentAvailability ? 'border-rojo-intenso border-2 bg-red-50' : 'border-gray-300' }} rounded-lg hover:bg-red-50 cursor-pointer transition duration-200">
+                                        <input type="radio"
+                                            name="is_available"
+                                            value="0"
+                                            class="h-5 w-5 text-rojo-intenso focus:ring-rojo-intenso border-gray-300"
+                                            {{ !$currentAvailability ? 'checked' : '' }}>
+                                        <div class="ml-3 flex items-center">
+                                            <div class="h-3 w-3 rounded-full bg-rojo-intenso mr-2"></div>
+                                            <span class="text-sm font-medium text-gray-700">No disponible</span>
+                                        </div>
+                                        <span class="ml-auto text-xs text-gray-500">No aparecerás en búsquedas</span>
+                                    </label>
                                 </div>
+
                                 @error('is_available')
-                                    <p class="text-rojo-intenso text-sm mt-1">{{ $message }}</p>
+                                <p class="text-rojo-intenso text-sm mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
                         </div>
@@ -177,7 +202,7 @@
                     <!-- Archivos (Foto y Audio) -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                         <!-- Foto -->
-                        <div class="p-4 border border-gray-200 bg-gray-50">
+                        <div class="p-4 border border-gray-200 bg-gray-50 rounded-lg">
                             <label for="photo" class="block text-sm font-medium text-gray-700 mb-2">
                                 Foto de perfil
                             </label>
@@ -185,27 +210,27 @@
                             <div class="flex items-center space-x-4 mb-3">
                                 <img src="{{ asset('storage/' . $actor->photo) }}"
                                     alt="Foto actual"
-                                    class="w-16 h-16 object-cover border-2 border-amber-500 rounded">
+                                    class="w-16 h-16 object-cover border-2 border-ambar rounded-lg">
                                 <span class="text-sm text-gray-600">Foto actual</span>
                             </div>
                             @endif
                             <input type="file" name="photo" id="photo"
                                 accept="image/*"
-                                class="w-full border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-rosa-electrico focus:border-rosa-electrico">
+                                class="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-naranja-vibrante focus:border-naranja-vibrante">
                             <p class="text-xs text-gray-500 mt-1">Dejar vacío para mantener la actual</p>
                             @error('photo')
-                                <p class="text-rojo-intenso text-sm mt-1">{{ $message }}</p>
+                            <p class="text-rojo-intenso text-sm mt-1">{{ $message }}</p>
                             @enderror
                         </div>
 
                         <!-- Audio -->
-                        <div class="p-4 border border-gray-200 bg-gray-50">
+                        <div class="p-4 border border-gray-200 bg-gray-50 rounded-lg">
                             <label for="audio_path" class="block text-sm font-medium text-gray-700 mb-2">
                                 Muestra de voz
                             </label>
                             @if($actor->audio_path)
                             <div class="flex items-center space-x-4 mb-3">
-                                <i class="fas fa-volume-up text-azul-profundo text-xl"></i>
+                                <i class="fas fa-volume-up text-rosa-electrico text-xl"></i>
                                 <audio controls class="h-8">
                                     <source src="{{ asset('storage/' . $actor->audio_path) }}" type="audio/mpeg">
                                 </audio>
@@ -213,10 +238,10 @@
                             @endif
                             <input type="file" name="audio_path" id="audio_path"
                                 accept="audio/*"
-                                class="w-full border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-azul-profundo focus:border-azul-profundo">
+                                class="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-rosa-electrico focus:border-rosa-electrico">
                             <p class="text-xs text-gray-500 mt-1">Dejar vacío para mantener la actual</p>
                             @error('audio_path')
-                                <p class="text-rojo-intenso text-sm mt-1">{{ $message }}</p>
+                            <p class="text-rojo-intenso text-sm mt-1">{{ $message }}</p>
                             @enderror
                         </div>
                     </div>
@@ -224,35 +249,35 @@
                     <!-- Escuelas y Obras -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                         <!-- Escuelas -->
-                        <div class="p-4 border border-gray-200 bg-gray-50">
+                        <div class="p-4 border border-gray-200 bg-gray-50 rounded-lg">
                             <label class="block text-sm font-medium text-gray-700 mb-3">
                                 Escuelas de formación
                             </label>
-                            <div class="filter-scroll-container border border-gray-200 bg-white">
+                            <div class="filter-scroll-container border border-gray-200 bg-white rounded-lg">
                                 @foreach($schools as $school)
-                                <label class="flex items-center p-3 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 cursor-pointer">
+                                <label class="flex items-center p-3 border-b border-gray-100 last:border-b-0 hover:bg-ambar/10 cursor-pointer">
                                     <input type="checkbox" name="schools[]" value="{{ $school->id }}"
-                                        class="border-gray-300 text-azul-profundo focus:ring-azul-profundo"
+                                        class="border-gray-300 text-ambar focus:ring-ambar focus:ring-2"
                                         {{ in_array($school->id, old('schools', $actor->schools->pluck('id')->toArray())) ? 'checked' : '' }}>
                                     <span class="ml-3 text-sm text-gray-700">{{ $school->name }}</span>
                                 </label>
                                 @endforeach
                             </div>
                             @error('schools')
-                                <p class="text-rojo-intenso text-sm mt-1">{{ $message }}</p>
+                            <p class="text-rojo-intenso text-sm mt-1">{{ $message }}</p>
                             @enderror
                         </div>
 
                         <!-- Obras -->
-                        <div class="p-4 border border-gray-200 bg-gray-50">
+                        <div class="p-4 border border-gray-200 bg-gray-50 rounded-lg">
                             <label class="block text-sm font-medium text-gray-700 mb-3">
                                 Obras participadas
                             </label>
-                            <div class="filter-scroll-container border border-gray-200 bg-white">
+                            <div class="filter-scroll-container border border-gray-200 bg-white rounded-lg">
                                 @foreach($works as $work)
-                                <div class="flex items-start p-3 border-b border-gray-100 last:border-b-0 hover:bg-gray-50">
+                                <div class="flex items-start p-3 border-b border-gray-100 last:border-b-0 hover:bg-rosa-electrico/5">
                                     <input type="checkbox" name="works[]" value="{{ $work->id }}"
-                                        class="mt-1 border-gray-300 text-azul-profundo focus:ring-azul-profundo"
+                                        class="mt-1 border-gray-300 text-rosa-electrico focus:ring-rosa-electrico focus:ring-2"
                                         {{ in_array($work->id, old('works', $actor->works->pluck('id')->toArray())) ? 'checked' : '' }}>
                                     <div class="ml-3 flex-1">
                                         <div class="flex justify-between items-start">
@@ -268,7 +293,7 @@
                                         @endphp
                                         <input type="text" name="character_names[{{ $work->id }}]"
                                             placeholder="Nombre del personaje"
-                                            class="mt-2 w-full text-sm border border-gray-300 px-3 py-1 focus:border-azul-profundo focus:ring-azul-profundo"
+                                            class="mt-2 w-full text-sm border border-gray-300 px-3 py-1 rounded focus:border-rosa-electrico focus:ring-rosa-electrico focus:ring-1"
                                             value="{{ old('character_names.' . $work->id, $characterName) }}">
                                     </div>
                                 </div>
@@ -279,15 +304,15 @@
 
                     <!-- Sección de Profesor (Solo para Admin) -->
                     @if(isset($isAdmin) && $isAdmin)
-                    <div class="mt-6 p-4 border border-gray-200 bg-gray-50">
+                    <div class="mt-6 p-4 border border-gray-200 bg-gray-50 rounded-lg">
                         <h2 class="text-xl font-semibold text-gray-800 mb-4">Información como Profesor</h2>
                         <div class="space-y-3">
                             @foreach($schools as $school)
-                            <div class="flex items-center justify-between p-3 border border-gray-200 bg-white">
+                            <div class="flex items-center justify-between p-3 border border-gray-200 bg-white rounded-lg">
                                 <label class="flex items-center">
                                     <input type="checkbox" name="teaching_schools[]" value="{{ $school->id }}"
                                         {{ in_array($school->id, $currentTeachingSchools ?? []) ? 'checked' : '' }}
-                                        class="text-blue-600 focus:ring-blue-500 teaching-school-checkbox">
+                                        class="text-ambar focus:ring-ambar focus:ring-2 teaching-school-checkbox">
                                     <span class="ml-2 text-sm text-gray-700">{{ $school->name }}</span>
                                 </label>
 
@@ -295,10 +320,10 @@
                                     <input type="text" name="teaching_subjects[{{ $school->id }}]"
                                         placeholder="Materia que imparte"
                                         value="{{ $actor->teachingSchools->firstWhere('id', $school->id)?->pivot?->subject }}"
-                                        class="border border-gray-300 px-3 py-1 text-sm w-48">
+                                        class="border border-gray-300 px-3 py-1 text-sm w-48 rounded">
                                     <textarea name="teaching_bios[{{ $school->id }}]"
                                         placeholder="Bio como profesor"
-                                        class="border border-gray-300 px-3 py-1 text-sm w-48 ml-2">{{ $actor->teachingSchools->firstWhere('id', $school->id)?->pivot?->teaching_bio }}</textarea>
+                                        class="border border-gray-300 px-3 py-1 text-sm w-48 ml-2 rounded">{{ $actor->teachingSchools->firstWhere('id', $school->id)?->pivot?->teaching_bio }}</textarea>
                                 </div>
                             </div>
                             @endforeach
@@ -311,18 +336,18 @@
                         @if(isset($isAdmin) && $isAdmin)
                         <div>
                             <p class="text-sm text-gray-500">
-                                <i class="fas fa-info-circle text-blue-500 mr-1"></i>
+                                <i class="fas fa-info-circle text-naranja-vibrante mr-1"></i>
                                 Usuario: {{ $actor->user->email }}
                             </p>
                         </div>
                         @endif
                         <div class="flex space-x-4">
                             <a href="{{ isset($isAdmin) && $isAdmin ? route('admin.actors') : route('actors.show', $actor) }}"
-                                class="px-6 py-3 border border-gray-300 text-gray-700 hover:bg-gray-50 transition duration-200 font-medium">
+                                class="px-6 py-3 border border-gray-300 text-gray-700 hover:bg-gray-50 transition duration-200 font-medium rounded-lg">
                                 Cancelar
                             </a>
                             <button type="submit"
-                                class="px-6 py-3 {{ isset($isAdmin) && $isAdmin ? 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500' : 'bg-verde-menta hover:bg-verde-menta hover:bg-opacity-90' }} text-white hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 transition duration-200 font-medium flex items-center">
+                                class="px-6 py-3 {{ isset($isAdmin) && $isAdmin ? 'bg-naranja-vibrante hover:bg-naranja-vibrante/90 focus:ring-naranja-vibrante' : 'bg-verde-menta hover:bg-verde-menta/90 focus:ring-verde-menta' }} text-white hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 transition duration-200 font-medium flex items-center rounded-lg">
                                 <i class="fas fa-save mr-2"></i>
                                 {{ isset($isAdmin) && $isAdmin ? 'Actualizar Actor' : 'Actualizar Perfil' }}
                             </button>
@@ -335,9 +360,9 @@
         <!-- Columna de Información Lateral (Solo para Actor) -->
         @if(!isset($isAdmin))
         <div class="lg:w-1/4">
-            <div class="bg-white p-6 shadow-md sticky top-4 border border-gray-200">
+            <div class="bg-white p-6 shadow-md sticky top-4 border border-gray-200 rounded-lg">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">Estado del perfil</h2>
-                
+
                 <div class="space-y-3 mb-6">
                     <div class="flex justify-between items-center">
                         <span class="text-sm text-gray-600">Visibilidad:</span>
@@ -357,13 +382,13 @@
                     <div class="space-y-2 text-sm text-gray-600">
                         @if(!$actor->photo)
                         <div class="flex items-center space-x-2">
-                            <i class="fas fa-camera text-rosa-electrico"></i>
+                            <i class="fas fa-camera text-naranja-vibrante"></i>
                             <span>Añade una foto profesional</span>
                         </div>
                         @endif
                         @if(!$actor->audio_path)
                         <div class="flex items-center space-x-2">
-                            <i class="fas fa-volume-up text-azul-profundo"></i>
+                            <i class="fas fa-volume-up text-rosa-electrico"></i>
                             <span>Sube una muestra de voz</span>
                         </div>
                         @endif
@@ -384,103 +409,133 @@
 
 @section('styles')
 <style>
-.filter-scroll-container {
-    max-height: 12rem;
-    overflow-y: auto;
-    padding: 0;
-}
-
-.filter-scroll-container::-webkit-scrollbar {
-    width: 6px;
-}
-
-.filter-scroll-container::-webkit-scrollbar-track {
-    background: #f1f1f1;
-}
-
-.filter-scroll-container::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
-}
-
-.filter-scroll-container::-webkit-scrollbar-thumb:hover {
-    background: #a8a8a8;
-}
-
-/* Colores personalizados */
-.text-rosa-electrico { color: #ec4899; }
-.text-naranja-vibrante { color: #f97316; }
-.text-azul-profundo { color: #1e40af; }
-.text-verde-menta { color: #10b981; }
-.text-rojo-intenso { color: #ef4444; }
-
-.bg-rosa-electrico { background-color: #ec4899; }
-.bg-naranja-vibrante { background-color: #f97316; }
-.bg-azul-profundo { background-color: #1e40af; }
-.bg-verde-menta { background-color: #10b981; }
-.bg-rojo-intenso { background-color: #ef4444; }
-
-.border-rosa-electrico { border-color: #ec4899; }
-.border-naranja-vibrante { border-color: #f97316; }
-.border-azul-profundo { border-color: #1e40af; }
-.border-verde-menta { border-color: #10b981; }
-.border-rojo-intenso { border-color: #ef4444; }
-
-.focus\:ring-rosa-electrico:focus { --tw-ring-color: #ec4899; }
-.focus\:ring-naranja-vibrante:focus { --tw-ring-color: #f97316; }
-.focus\:ring-azul-profundo:focus { --tw-ring-color: #1e40af; }
-.focus\:ring-verde-menta:focus { --tw-ring-color: #10b981; }
-</style>
-@endsection
-
-@section('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Toggle Switch para disponibilidad
-    const availabilityToggle = document.getElementById('availabilityToggle');
-    const availabilityInput = document.getElementById('availabilityInput');
-    
-    if (availabilityToggle) {
-        const availabilityText = document.getElementById('availabilityText');
-        const availabilitySubtext = document.getElementById('availabilitySubtext');
-        
-        availabilityToggle.addEventListener('click', function() {
-            const isAvailable = availabilityInput.value === '1';
-            availabilityInput.value = isAvailable ? '0' : '1';
-            
-            if (availabilityInput.value === '1') {
-                this.classList.remove('bg-gray-300', 'focus:ring-gray-400');
-                this.classList.add('bg-verde-menta', 'focus:ring-verde-menta');
-                this.querySelector('span').classList.remove('translate-x-1');
-                this.querySelector('span').classList.add('translate-x-9');
-                availabilityText.textContent = 'Disponible';
-                if(availabilitySubtext) {
-                    availabilitySubtext.textContent = 'Los clientes pueden contactarte';
-                }
-            } else {
-                this.classList.remove('bg-verde-menta', 'focus:ring-verde-menta');
-                this.classList.add('bg-gray-300', 'focus:ring-gray-400');
-                this.querySelector('span').classList.remove('translate-x-9');
-                this.querySelector('span').classList.add('translate-x-1');
-                availabilityText.textContent = 'No disponible';
-                if(availabilitySubtext) {
-                    availabilitySubtext.textContent = 'No aparecerás en búsquedas';
-                }
-            }
-        });
+    .filter-scroll-container {
+        max-height: 12rem;
+        overflow-y: auto;
+        padding: 0;
     }
 
-    // Toggle para escuelas de profesor (solo admin)
-    const teachingCheckboxes = document.querySelectorAll('.teaching-school-checkbox');
-    teachingCheckboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-            const fields = this.closest('.flex').querySelector('.teaching-school-fields');
-            if (this.checked) {
-                fields.classList.remove('hidden');
-            } else {
-                fields.classList.add('hidden');
-            }
-        });
-    });
-});
-</script>
+    .filter-scroll-container::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .filter-scroll-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 3px;
+    }
+
+    .filter-scroll-container::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 3px;
+    }
+
+    .filter-scroll-container::-webkit-scrollbar-thumb:hover {
+        background: #a8a8a8;
+    }
+
+    /* Colores personalizados según tu paleta */
+    .text-naranja-vibrante {
+        color: #f97316;
+    }
+
+    /* Naranja para actores */
+    .text-ambar {
+        color: #f59e0b;
+    }
+
+    /* Amarillo yema para escuelas */
+    .text-rosa-electrico {
+        color: #ec4899;
+    }
+
+    /* Rosa para obras */
+    .text-verde-menta {
+        color: #10b981;
+    }
+
+    /* Verde para disponibilidad */
+    .text-rojo-intenso {
+        color: #ef4444;
+    }
+
+    /* Rojo para errores */
+
+    .bg-naranja-vibrante {
+        background-color: #f97316;
+    }
+
+    .bg-ambar {
+        background-color: #f59e0b;
+    }
+
+    .bg-rosa-electrico {
+        background-color: #ec4899;
+    }
+
+    .bg-verde-menta {
+        background-color: #10b981;
+    }
+
+    .bg-rojo-intenso {
+        background-color: #ef4444;
+    }
+
+    .border-naranja-vibrante {
+        border-color: #f97316;
+    }
+
+    .border-ambar {
+        border-color: #f59e0b;
+    }
+
+    .border-rosa-electrico {
+        border-color: #ec4899;
+    }
+
+    .border-verde-menta {
+        border-color: #10b981;
+    }
+
+    .border-rojo-intenso {
+        border-color: #ef4444;
+    }
+
+    .focus\:ring-naranja-vibrante:focus {
+        --tw-ring-color: #f97316;
+    }
+
+    .focus\:ring-ambar:focus {
+        --tw-ring-color: #f59e0b;
+    }
+
+    .focus\:ring-rosa-electrico:focus {
+        --tw-ring-color: #ec4899;
+    }
+
+    .focus\:ring-verde-menta:focus {
+        --tw-ring-color: #10b981;
+    }
+
+    .from-naranja-vibrante {
+        --tw-gradient-from: #f97316;
+    }
+
+    .to-ambar {
+        --tw-gradient-to: #f59e0b;
+    }
+</style>
 @endsection
+{{-- DEBUG: Solo temporal para verificar --}}
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('=== EDIT PAGE DEBUG ===');
+        console.log('Toggle:', document.getElementById('availabilityToggle'));
+        console.log('Input:', document.getElementById('availabilityInput'));
+        console.log('Valor inicial:', document.getElementById('availabilityInput')?.value);
+
+        // Verificar si ActorFilters se cargó
+        console.log('ActorFilters en window:', window.actorFilters);
+    });
+</script>
+@endpush

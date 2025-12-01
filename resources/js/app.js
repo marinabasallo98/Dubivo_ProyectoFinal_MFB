@@ -1,42 +1,64 @@
 import './bootstrap';
 
-// Cargar todos los componentes
-Promise.all([
-    import('./components/ActorFilters.js'),
-    import('./components/SchoolFilters.js'), 
-    import('./components/WorkFilters.js')
-]).then(([actorModule, schoolModule, workModule]) => {
-    // Guardar en window para acceso global
-    window.ActorFilters = actorModule.ActorFilters;
-    window.SchoolFilters = schoolModule.SchoolFilters;
-    window.WorkFilters = workModule.WorkFilters;
-    
-    // Inicializar componentes
-    initializeComponents();
-}).catch(error => {
-    console.error('Error cargando componentes:', error);
-});
+// Importar todos los componentes de forma dinámica
+const loadComponents = async () => {
+    try {
+        // ActorFilters se auto-inicializa, solo necesitamos cargarlo
+        const actorModule = await import('./components/ActorFilters.js');
+        
+        // Cargar otros componentes si existen
+        const modules = {};
+        
+        if (document.getElementById('schoolsContainer') || document.querySelector('.school-filters')) {
+            const schoolModule = await import('./components/SchoolFilters.js');
+            modules.SchoolFilters = schoolModule.SchoolFilters;
+        }
+        
+        if (document.getElementById('worksContainer') || document.querySelector('.work-filters')) {
+            const workModule = await import('./components/WorkFilters.js');
+            modules.WorkFilters = workModule.WorkFilters;
+        }
+        
+        // Guardar en window para acceso global (si es necesario)
+        window.ActorFilters = actorModule.ActorFilters;
+        if (modules.SchoolFilters) window.SchoolFilters = modules.SchoolFilters;
+        if (modules.WorkFilters) window.WorkFilters = modules.WorkFilters;
+        
+        // Inicializar SchoolFilters y WorkFilters si existen
+        initializeOtherComponents(modules);
+        
+    } catch (error) {
+        console.warn('Algunos componentes no se pudieron cargar:', error);
+        // Continuar aunque falle la carga de algún componente
+    }
+};
 
-function initializeComponents() {
-    // Actores
-    if (document.getElementById('actorsContainer') && window.ActorFilters) {
-        new window.ActorFilters();
+function initializeOtherComponents(modules) {
+    // SchoolFilters (si necesita inicialización explícita)
+    if (modules.SchoolFilters && document.getElementById('schoolsContainer')) {
+        try {
+            new modules.SchoolFilters();
+        } catch (e) {
+            console.warn('Error inicializando SchoolFilters:', e);
+        }
     }
     
-    // Escuelas
-    if (document.getElementById('schoolsContainer') && window.SchoolFilters) {
-        new window.SchoolFilters();
-    }
-    
-    // Obras
-    if (document.getElementById('worksContainer') && window.WorkFilters) {
-        new window.WorkFilters();
+    // WorkFilters (si necesita inicialización explícita)
+    if (modules.WorkFilters && document.getElementById('worksContainer')) {
+        try {
+            new modules.WorkFilters();
+        } catch (e) {
+            console.warn('Error inicializando WorkFilters:', e);
+        }
     }
 }
 
-// Inicializar si el DOM ya está listo
+// Inicializar cuando el DOM esté listo
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeComponents);
+    document.addEventListener('DOMContentLoaded', loadComponents);
 } else {
-    initializeComponents();
+    loadComponents();
 }
+
+// Exportar para uso en módulos (si es necesario)
+export { loadComponents };

@@ -1,106 +1,75 @@
+//Manejamos los filtros de actores
 export class ActorFilters {
     constructor() {
-        console.log('ActorFilters inicializado');
-        this.initForCurrentPage();
+        console.log('🎭 Filtros de actores listos');
+        this.iniciar();
     }
 
-    initForCurrentPage() {
-        // Página de índice de actores
+    iniciar() {
+        //Página de lista de actores
         if (document.querySelector('.actor-card')) {
-            this.initActorIndex();
+            this.filtrarPorBusqueda();
         }
         
-        // Página de edición/creación de actor
+        //Página de formulario de actor
         if (document.querySelector('form[action*="actors"]')) {
-            this.initActorForm();
+            this.mejorarFormulario();
         }
     }
 
-    initActorIndex() {
-        console.log('Inicializando para índice de actores');
-        this.setupBasicFilters();
-    }
+    //Filtramos actores por búsqueda
+    filtrarPorBusqueda() {
+        const buscador = document.getElementById('searchActor');
+        if (!buscador) return;
 
-    initActorForm() {
-        console.log('Inicializando para formulario de actor');
-        this.enhanceFormVisuals();
-        // ELIMINADO: this.setupDynamicScrollContainers(); ← ¡Ya no lo necesitas!
-    }
-
-    setupBasicFilters() {
-        const searchInput = document.getElementById('searchActor');
-        if (searchInput) {
-            let timeout;
-            searchInput.addEventListener('input', () => {
-                clearTimeout(timeout);
-                timeout = setTimeout(() => this.filterActors(), 300);
-            });
-        }
+        let tiempoEspera;
         
-        document.querySelectorAll('#filter-form input').forEach(input => {
-            input.addEventListener('change', () => this.filterActors());
-        });
-    }
-
-    filterActors() {
-        const searchTerm = document.getElementById('searchActor')?.value.toLowerCase() || '';
-        const actorCards = document.querySelectorAll('.actor-card');
-        
-        actorCards.forEach(card => {
-            const actorName = card.getAttribute('data-name').toLowerCase();
-            card.style.display = actorName.includes(searchTerm) ? 'flex' : 'none';
-        });
-    }
-
-    enhanceFormVisuals() {
-        // Solo mantener esto si realmente lo necesitas
-        document.querySelectorAll('input[name="is_available"]').forEach(radio => {
-            radio.addEventListener('change', function() {
-                document.querySelectorAll('input[name="is_available"]').forEach(r => {
-                    const label = r.closest('label');
-                    if (r.checked) {
-                        label.classList.add('border-2', 'bg-opacity-10');
-                        label.classList.remove('border-gray-300');
-                    } else {
-                        label.classList.remove('border-2', 'bg-opacity-10');
-                        label.classList.add('border-gray-300');
-                    }
+        buscador.addEventListener('input', () => {
+            clearTimeout(tiempoEspera);
+            tiempoEspera = setTimeout(() => {
+                const texto = buscador.value.toLowerCase();
+                const tarjetas = document.querySelectorAll('.actor-card');
+                
+                tarjetas.forEach(tarjeta => {
+                    const nombre = tarjeta.getAttribute('data-name').toLowerCase();
+                    tarjeta.style.display = nombre.includes(texto) ? 'flex' : 'none';
                 });
-            });
+            }, 300);
         });
-        
-        // Previsualización de imagen (opcional)
-        const photoInput = document.getElementById('photo');
-        if (photoInput) {
-            photoInput.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file && file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        let preview = document.getElementById('photoPreview');
-                        if (!preview) {
-                            preview = document.createElement('img');
-                            preview.id = 'photoPreview';
-                            preview.className = 'w-16 h-16 object-cover rounded-lg mt-2';
-                            photoInput.parentNode.appendChild(preview);
+    }
+
+    //Mejoramos la experiencia del formulario
+    mejorarFormulario() {
+        //Previsualizamos la foto cuando se selecciona
+        const inputFoto = document.getElementById('photo');
+        if (inputFoto) {
+            inputFoto.addEventListener('change', function(e) {
+                const archivo = e.target.files[0];
+                if (archivo && archivo.type.startsWith('image/')) {
+                    const lector = new FileReader();
+                    lector.onload = function(evento) {
+                        //Mostramos miniatura de la foto
+                        let vistaPrevia = document.getElementById('photoPreview');
+                        if (!vistaPrevia) {
+                            vistaPrevia = document.createElement('img');
+                            vistaPrevia.id = 'photoPreview';
+                            vistaPrevia.className = 'w-16 h-16 object-cover rounded-lg mt-2';
+                            inputFoto.parentNode.appendChild(vistaPrevia);
                         }
-                        preview.src = event.target.result;
+                        vistaPrevia.src = evento.target.result;
                     };
-                    reader.readAsDataURL(file);
+                    lector.readAsDataURL(archivo);
                 }
             });
         }
     }
-
-    // ¡ELIMINA TODOS LOS MÉTODOS DE SCROLL! 
-    // setupDynamicScrollContainers, setupScrollContainer, etc.
-    // El scroll ahora se maneja SOLO con CSS
 }
 
+//Inicializamos automáticamente si estamos en página de actores
 if (typeof window !== 'undefined') {
     document.addEventListener('DOMContentLoaded', () => {
         if (document.querySelector('.actor-card') || document.querySelector('form[action*="actors"]')) {
-            window.actorFilters = new ActorFilters();
+            window.filtrosActor = new ActorFilters();
         }
     });
 }

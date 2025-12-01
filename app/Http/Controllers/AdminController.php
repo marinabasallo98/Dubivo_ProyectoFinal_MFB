@@ -9,6 +9,7 @@ use App\Models\Actor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
@@ -26,6 +27,7 @@ class AdminController extends Controller
             'total_admins' => User::where('role', 'admin')->count(),
             'total_schools' => School::count(),
             'total_works' => Work::count(),
+            'total_teacher_actors' => Actor::has('teachingSchools')->count(), // ← AÑADE ESTO
         ];
 
         $recentActors = Actor::with('user')
@@ -355,7 +357,6 @@ class AdminController extends Controller
             'works' => Work::all(),
             'genders' => Actor::getGenderOptions(),
             'voiceAges' => Actor::getVoiceAgeOptions(),
-            'users' => User::whereDoesntHave('actorProfile')->get(), //Usuarios sin perfil
         ];
 
         return view('admin.actors.create', $data);
@@ -366,8 +367,36 @@ class AdminController extends Controller
     {
         $this->verificarAdmin();
 
-        $data = $request->validate([
-            'user_id' => 'required|exists:users,id',
+        // Primero crear usuario
+        $userData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:8|confirmed',
+        ], [
+            'required' => 'El campo :attribute es obligatorio.',
+            'string' => 'El campo :attribute debe ser texto.',
+            'email' => 'El campo :attribute debe ser un email válido.',
+            'unique' => 'Este :attribute ya está registrado.',
+            'min' => [
+                'string' => 'El campo :attribute debe tener al menos :min caracteres.',
+            ],
+            'confirmed' => 'Las contraseñas no coinciden.',
+        ], [
+            'name' => 'nombre',
+            'email' => 'email',
+            'password' => 'contraseña',
+        ]);
+
+        // Crear usuario
+        $user = User::create([
+            'name' => $userData['name'],
+            'email' => $userData['email'],
+            'password' => Hash::make($userData['password']),
+            'role' => 'actor',
+        ]);
+
+        // Luego validar datos del actor
+        $actorData = $request->validate([
             'bio' => 'nullable|string|max:1000',
             'photo' => 'nullable|image|max:2048',
             'audio_path' => 'nullable|file|mimes:mp3,wav|max:5120',
@@ -377,7 +406,6 @@ class AdminController extends Controller
             'schools' => 'nullable|array',
             'works' => 'nullable|array'
         ], [
-            //Mensajes de validación en español (igual que ActorController)
             'required' => 'El campo :attribute es obligatorio.',
             'string' => 'El campo :attribute debe ser texto.',
             'max' => [
@@ -389,10 +417,7 @@ class AdminController extends Controller
             'mimes' => 'El campo :attribute debe ser MP3 o WAV.',
             'array' => 'El campo :attribute debe ser una lista.',
             'boolean' => 'El campo :attribute debe ser sí o no.',
-            'exists' => 'El usuario seleccionado no existe.',
         ], [
-            //Nombres de campos en español
-            'user_id' => 'usuario',
             'bio' => 'biografía',
             'photo' => 'foto',
             'audio_path' => 'audio',
@@ -403,20 +428,15 @@ class AdminController extends Controller
             'works' => 'trabajos',
         ]);
 
-        //Verificar que el usuario no tenga ya perfil
-        if (Actor::where('user_id', $data['user_id'])->exists()) {
-            return redirect()->back()->with('error', 'Este usuario ya tiene perfil de actor.');
-        }
-
-        //Crear actor (similar a ActorController@store)
+        // Crear actor
         $actor = new Actor();
-        $actor->user_id = $data['user_id'];
-        $actor->bio = $data['bio'] ?? null;
-        $actor->genders = $data['genders'];
-        $actor->voice_ages = $data['voice_ages'];
+        $actor->user_id = $user->id;
+        $actor->bio = $actorData['bio'] ?? null;
+        $actor->genders = $actorData['genders'];
+        $actor->voice_ages = $actorData['voice_ages'];
         $actor->is_available = $request->has('is_available');
 
-        //Guardar archivos
+        // Guardar archivos
         if ($request->hasFile('photo')) {
             $actor->photo = $this->guardarArchivo($request->file('photo'), 'actors/photos');
         }
@@ -427,7 +447,7 @@ class AdminController extends Controller
 
         $actor->save();
 
-        //Asociar relaciones
+        // Asociar relaciones
         if ($request->has('schools')) {
             $actor->schools()->sync($request->schools);
         }
@@ -436,7 +456,7 @@ class AdminController extends Controller
             $actor->agregarTrabajos($request->works, $request->character_names ?? []);
         }
 
-        return redirect()->route('admin.actors')->with('success', 'Actor creado exitosamente.');
+        return redirect()->route('admin.actors')->with('success', 'Actor y usuario creados exitosamente.');
     }
 
     //Mostramos el formulario para editar un actor

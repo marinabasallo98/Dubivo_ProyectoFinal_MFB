@@ -140,7 +140,7 @@
                                     Edades vocales que puede interpretar <span class="text-rojo-intenso">*</span>
                                 </label>
                                 @php
-                                $voiceAges = ['Niño', 'Adolescente', 'Adulto Joven', 'Adulto', 'Anciano', 'Atipada'];
+                                $voiceAges = ['Niño', 'Adolescente', 'Adulto joven', 'Adulto', 'Anciano', 'Atipada'];
                                 $currentVoiceAges = old('voice_ages', $actor->voice_ages ?? []);
                                 @endphp
                                 <div class="grid grid-cols-2 gap-x-4 filter-scroll-container">

@@ -186,10 +186,6 @@
                                 <i class="fas fa-school text-4xl mb-4"></i>
                                 <p class="text-lg font-medium">No hay escuelas registradas</p>
                                 <p class="mt-2">Comienza añadiendo la primera escuela</p>
-                                <a href="{{ route('admin.schools.create') }}"
-                                    class="bg-naranja-vibrante hover:bg-rosa-electrico text-white transition-colors duration-300  px-4 py-2 flex items-center h-[42px] font-medium">
-                                    Crear Primera Escuela
-                                </a>
                             </div>
                         </td>
                     </tr>

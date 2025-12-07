@@ -168,8 +168,8 @@ unset($__errorArgs, $__bag); ?>
                     </a>
                     <button type="submit"
                         class="bg-rosa-electrico hover:bg-naranja-vibrante text-white px-4 py-2 flex items-center text-sm font-semibold transition-colors duration-300">
-                            <i class="fas fa-save mr-2"></i>
-                            Actualizar Obra
+                        <i class="fas fa-save mr-2"></i>
+                        Actualizar Obra
                     </button>
                 </div>
             </div>

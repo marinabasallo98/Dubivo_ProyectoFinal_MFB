@@ -62,7 +62,7 @@ class ActorController extends Controller
 
         // Datos para filtros
         $genders = ['Femenino', 'Masculino', 'Otro'];
-        $voiceAges = ['Niño', 'Adolescente', 'Adulto Joven', 'Adulto', 'Anciano', 'Atipada'];
+        $voiceAges = ['Niño', 'Adolescente', 'Adulto joven', 'Adulto', 'Anciano', 'Atipada'];
         $schools = School::orderBy('name')->get();
 
         return view('actors.index', compact('actors', 'genders', 'voiceAges', 'schools'));
@@ -89,13 +89,19 @@ class ActorController extends Controller
     {
         // Si ya tiene perfil, lo redirigimos a editar.
         if (Auth::user()->actorProfile) {
-            return redirect()->route('actors.profile.edit');
+            return redirect()->route('actor.profile.edit');
         }
+
+        // 1. OBTENER LAS OPCIONES DE GÉNERO Y EDADES DE VOZ
+        $genders = Actor::getGenderOptions();
+        $voiceAges = Actor::getVoiceAgeOptions();
+
         // Asegúrate de pasar los datos necesarios para el formulario de creación si es necesario.
         $schools = School::orderBy('name')->get();
         $works = Work::orderBy('title')->get();
 
-        return view('actors.create', compact('schools', 'works'));
+        // 2. AÑADIR LAS NUEVAS VARIABLES A LA VISTA
+        return view('actors.create', compact('schools', 'works', 'genders', 'voiceAges'));
     }
 
     public function store(Request $request)
@@ -112,7 +118,7 @@ class ActorController extends Controller
             'audio_path' => 'nullable|file|mimes:mp3,wav|max:5120',
             'genders' => 'required|array',
             'voice_ages' => 'required|array',
-            'schools' => 'required|array',
+            'schools' => 'nullable|array',
             'schools.*' => 'exists:schools,id',
             'works' => 'nullable|array',
             'works.*' => 'exists:works,id',
@@ -139,7 +145,23 @@ class ActorController extends Controller
 
         // 5. Sincronización de relaciones
         $actor->schools()->sync($request->schools);
-        $actor->works()->sync($request->works ?? []);
+        //Sincronización de obras destacadas con el nombre del personaje
+        if ($request->filled('works')) {
+            $syncData = [];
+            foreach ($request->works as $workId) {
+                // 1. Obtiene el nombre del personaje. Si es nulo o vacío, usa cadena vacía.
+                $characterName = $request->input("character_names.$workId") ?? '';
+
+                // 2. Formato especial para guardar datos en la columna pivote 'character_name'.
+                $syncData[$workId] = ['character_name' => $characterName];
+            }
+
+            // 3. Sincroniza la relación many-to-many.
+            $actor->works()->sync($syncData);
+        } else {
+            // Si no hay obras seleccionadas, elimina cualquier relación.
+            $actor->works()->detach();
+        }
 
         return redirect()->route('dashboard')->with('success', '¡Perfil de actor creado con éxito!');
     }
@@ -225,36 +247,36 @@ class ActorController extends Controller
         return redirect()->back();
     }
 
-public function destroyProfile()
-{
-    // Obtenemos el usuario autenticado
-    $user = Auth::user();
+    public function destroyProfile()
+    {
+        // Obtenemos el usuario autenticado
+        $user = Auth::user();
 
-    // 1. OBTENER EL PERFIL DEL ACTOR CON EL NOMBRE DE RELACIÓN CORRECTO
-    $actor = $user->actorProfile; 
+        // 1. OBTENER EL PERFIL DEL ACTOR CON EL NOMBRE DE RELACIÓN CORRECTO
+        $actor = $user->actorProfile;
 
-    if ($actor) {
-        // 2. Eliminar archivos asociados (foto y audio)
-        // Usamos los métodos privados de tu controlador
-        if ($actor->photo) $this->eliminarArchivo($actor->photo);
-        if ($actor->audio_path) $this->eliminarArchivo($actor->audio_path);
+        if ($actor) {
+            // 2. Eliminar archivos asociados (foto y audio)
+            // Usamos los métodos privados de tu controlador
+            if ($actor->photo) $this->eliminarArchivo($actor->photo);
+            if ($actor->audio_path) $this->eliminarArchivo($actor->audio_path);
 
-        // 3. Eliminamos el perfil del actor. 
-        $actor->delete();
+            // 3. Eliminamos el perfil del actor. 
+            $actor->delete();
+        }
+
+        // 4. Eliminamos el usuario (esto es lo que borra la cuenta)
+        $user->delete();
+
+        // 5. Cerramos sesión y redirigimos
+        Auth::logout();
+
+        // Invalidamos la sesión por seguridad
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+
+        return redirect('/')->with('success', 'Tu cuenta ha sido eliminada correctamente.');
     }
-
-    // 4. Eliminamos el usuario (esto es lo que borra la cuenta)
-    $user->delete();
-    
-    // 5. Cerramos sesión y redirigimos
-    Auth::logout();
-    
-    // Invalidamos la sesión por seguridad
-    request()->session()->invalidate();
-    request()->session()->regenerateToken();
-
-    return redirect('/')->with('success', 'Tu cuenta ha sido eliminada correctamente.');
-}
 
 
     // Eliminamos el perfil del actor y su cuenta de usuario

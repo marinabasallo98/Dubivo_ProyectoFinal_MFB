@@ -12,7 +12,7 @@
                 <p class="text-gray-600 mt-2">Administra todas las escuelas de doblaje registradas</p>
             </div>
             <a href="<?php echo e(route('admin.schools.create')); ?>"
-class="bg-naranja-vibrante hover:bg-rosa-electrico text-white transition-colors duration-300  px-4 py-2 flex items-center h-[42px] font-medium">                <i class="fas fa-plus mr-2"></i>
+                class="bg-naranja-vibrante hover:bg-rosa-electrico text-white transition-colors duration-300  px-4 py-2 flex items-center h-[42px] font-medium"> <i class="fas fa-plus mr-2"></i>
                 Nueva Escuela
             </a>
         </div>
@@ -40,11 +40,11 @@ class="bg-naranja-vibrante hover:bg-rosa-electrico text-white transition-colors 
             <!-- Búsqueda por nombre -->
             <div class="min-w-[200px]">
                 <label class="block text-sm font-medium text-gray-700 mb-1">Buscar Escuela</label>
-                <input type="text" 
-                       name="search" 
-                       value="<?php echo e(request('search')); ?>"
-                       placeholder="Nombre de la escuela..."
-                       class="w-full border border-gray-300 px-3 py-2 search-input">
+                <input type="text"
+                    name="search"
+                    value="<?php echo e(request('search')); ?>"
+                    placeholder="Nombre de la escuela..."
+                    class="w-full border border-gray-300 px-3 py-2 search-input">
             </div>
 
             <!-- Ciudad (Select con ciudades únicas) -->
@@ -62,7 +62,7 @@ class="bg-naranja-vibrante hover:bg-rosa-electrico text-white transition-colors 
             </div>
 
             <div class="flex items-end space-x-2">
-                <button type="submit"class="bg-naranja-vibrante hover:bg-rosa-electrico text-white transition-colors duration-300  px-4 py-2 flex items-center h-[42px] font-medium">
+                <button type="submit" class="bg-naranja-vibrante hover:bg-rosa-electrico text-white transition-colors duration-300  px-4 py-2 flex items-center h-[42px] font-medium">
                     <i class="fas fa-filter mr-2"></i> Filtrar
                 </button>
                 <a href="<?php echo e(route('admin.schools')); ?>" class="bg-gray-500 text-white px-4 py-2 hover:bg-gray-600 transition duration-200 flex items-center h-[42px] font-medium">
@@ -192,10 +192,6 @@ class="bg-naranja-vibrante hover:bg-rosa-electrico text-white transition-colors 
                                 <i class="fas fa-school text-4xl mb-4"></i>
                                 <p class="text-lg font-medium">No hay escuelas registradas</p>
                                 <p class="mt-2">Comienza añadiendo la primera escuela</p>
-                                <a href="<?php echo e(route('admin.schools.create')); ?>"
-                                    class="bg-naranja-vibrante hover:bg-rosa-electrico text-white transition-colors duration-300  px-4 py-2 flex items-center h-[42px] font-medium">
-                                    Crear Primera Escuela
-                                </a>
                             </div>
                         </td>
                     </tr>
@@ -215,28 +211,28 @@ class="bg-naranja-vibrante hover:bg-rosa-electrico text-white transition-colors 
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const filterForm = document.getElementById('filterForm');
-    const filterSelects = document.querySelectorAll('.filter-select');
-    const searchInput = document.querySelector('.search-input');
-    
-    let searchTimeout;
-    
-    // Filtro en tiempo real para selects
-    filterSelects.forEach(select => {
-        select.addEventListener('change', function() {
-            filterForm.submit();
+    document.addEventListener('DOMContentLoaded', function() {
+        const filterForm = document.getElementById('filterForm');
+        const filterSelects = document.querySelectorAll('.filter-select');
+        const searchInput = document.querySelector('.search-input');
+
+        let searchTimeout;
+
+        // Filtro en tiempo real para selects
+        filterSelects.forEach(select => {
+            select.addEventListener('change', function() {
+                filterForm.submit();
+            });
+        });
+
+        // Filtro en tiempo real para búsqueda (con debounce)
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                filterForm.submit();
+            }, 500);
         });
     });
-    
-    // Filtro en tiempo real para búsqueda (con debounce)
-    searchInput.addEventListener('input', function() {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(() => {
-            filterForm.submit();
-        }, 500);
-    });
-});
 </script>
 
 <style>

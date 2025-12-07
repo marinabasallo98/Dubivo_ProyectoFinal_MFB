@@ -14,7 +14,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/actors', [ActorController::class, 'index'])->name('actors.index');
-Route::get('/actors/{actor}', [ActorController::class, 'show'])->name('actors.show');
+/* Route::get('/actors/{actor}', [ActorController::class, 'show'])->name('actors.show'); */
 
 Route::get('/schools', [SchoolController::class, 'index'])->name('schools.index');
 Route::get('/schools/{school}', [SchoolController::class, 'show'])->name('schools.show');
@@ -43,17 +43,20 @@ Route::middleware('auth')->group(function () {
     //Dashboard según rol
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    route::get('/actors/create', [ActorController::class, 'create'])->name('actors.create');
+    Route::post('/actors', [ActorController::class, 'store'])->name('actors.store');
+
     //AJAX para cambiar disponibilidad (actor o admin)
     Route::put('/actors/{actor}/availability', [ActorController::class, 'updateAvailability'])
         ->name('actors.update-availability');
 
     // ========== GESTIÓN DE MI PROPIO PERFIL (Actor Logueado) ==========
-// Estas rutas NO usan el ID del actor, sino que obtienen el actor de Auth::user()
-Route::get('/profile/edit', [ActorController::class, 'editProfile'])->name('actor.profile.edit');
-Route::put('/profile', [ActorController::class, 'updateProfile'])->name('actor.profile.update');
-Route::delete('/profile/delete_photo', [ActorController::class, 'deletePhoto'])->name('actor.profile.delete_photo');
-Route::delete('/profile/delete_audio', [ActorController::class, 'deleteAudio'])->name('actor.profile.delete_audio');
-Route::delete('/profile/destroy', [ActorController::class, 'destroyProfile'])->name('actor.profile.destroy');
+    // Estas rutas NO usan el ID del actor, sino que obtienen el actor de Auth::user()
+    Route::get('/profile/edit', [ActorController::class, 'editProfile'])->name('actor.profile.edit');
+    Route::put('/profile', [ActorController::class, 'updateProfile'])->name('actor.profile.update');
+    Route::delete('/profile/delete_photo', [ActorController::class, 'deletePhoto'])->name('actor.profile.delete_photo');
+    Route::delete('/profile/delete_audio', [ActorController::class, 'deleteAudio'])->name('actor.profile.delete_audio');
+    Route::delete('/profile/destroy', [ActorController::class, 'destroyProfile'])->name('actor.profile.destroy');
 
     // ========== PANEL DE ADMINISTRACIÓN ==========
     Route::prefix('admin')->group(function () {
@@ -105,3 +108,6 @@ Route::delete('/profile/destroy', [ActorController::class, 'destroyProfile'])->n
     // Eliminación de poster de Obra
     Route::delete('/works/{work}/delete_poster', [AdminController::class, 'deleteWorkPoster'])->name('admin.works.delete_poster');
 });
+Route::get('/actors/{actor}', [ActorController::class, 'show'])->name('actors.show');
+Route::get('/schools/{school}', [SchoolController::class, 'show'])->name('schools.show');
+Route::get('/works/{work}', [WorkController::class, 'show'])->name('works.show');

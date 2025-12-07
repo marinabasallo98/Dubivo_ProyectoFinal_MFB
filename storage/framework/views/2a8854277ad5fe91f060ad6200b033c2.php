@@ -285,10 +285,6 @@
                                 <i class="fas fa-users text-4xl mb-4"></i>
                                 <p class="text-lg font-medium">No hay actores registrados</p>
                                 <p class="mt-2">Comienza añadiendo el primer actor</p>
-                                <a href="<?php echo e(route('admin.actors.create')); ?>"
-                                    class="inline-block mt-4 naranja-vibrante-600 text-white px-6 py-2 hover:naranja-vibrante-700 font-medium">
-                                    Crear Primer Actor
-                                </a>
                             </div>
                         </td>
                     </tr>

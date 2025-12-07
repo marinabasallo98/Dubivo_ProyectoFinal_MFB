@@ -21,18 +21,18 @@
         <div class="bg-white py-8 px-6 shadow-md border border-gray-200">
             <form action="<?php echo e(route('register.actor.submit')); ?>" method="POST" class="space-y-6">
                 <?php echo csrf_field(); ?>
-                
+
                 <!-- Nombre completo -->
                 <div>
                     <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Nombre completo</label>
                     <input type="text" name="name" id="name" required value="<?php echo e(old('name')); ?>"
-                           class="w-full border border-gray-300 px-3 py-2 focus:border-rosa-electrico focus:ring-rosa-electrico">
+                        class="w-full border border-gray-300 px-3 py-2 focus:border-rosa-electrico focus:ring-rosa-electrico">
                     <?php $__errorArgs = ['name'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?>
-                        <p class="text-red-600 text-sm mt-1"><?php echo e($message); ?></p>
+                    <p class="text-red-600 text-sm mt-1"><?php echo e($message); ?></p>
                     <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
@@ -43,13 +43,13 @@ unset($__errorArgs, $__bag); ?>
                 <div>
                     <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
                     <input type="email" name="email" id="email" required value="<?php echo e(old('email')); ?>"
-                           class="w-full border border-gray-300 px-3 py-2 focus:border-rosa-electrico focus:ring-rosa-electrico">
+                        class="w-full border border-gray-300 px-3 py-2 focus:border-rosa-electrico focus:ring-rosa-electrico">
                     <?php $__errorArgs = ['email'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?>
-                        <p class="text-red-600 text-sm mt-1"><?php echo e($message); ?></p>
+                    <p class="text-red-600 text-sm mt-1"><?php echo e($message); ?></p>
                     <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
@@ -60,13 +60,13 @@ unset($__errorArgs, $__bag); ?>
                 <div>
                     <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Contraseña</label>
                     <input type="password" name="password" id="password" required
-                           class="w-full border border-gray-300 px-3 py-2 focus:border-rosa-electrico focus:ring-rosa-electrico">
+                        class="w-full border border-gray-300 px-3 py-2 focus:border-rosa-electrico focus:ring-rosa-electrico">
                     <?php $__errorArgs = ['password'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?>
-                        <p class="text-red-600 text-sm mt-1"><?php echo e($message); ?></p>
+                    <p class="text-red-600 text-sm mt-1"><?php echo e($message); ?></p>
                     <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
@@ -77,13 +77,13 @@ unset($__errorArgs, $__bag); ?>
                 <div>
                     <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-2">Confirmar contraseña</label>
                     <input type="password" name="password_confirmation" id="password_confirmation" required
-                           class="w-full border border-gray-300 px-3 py-2 focus:border-rosa-electrico focus:ring-rosa-electrico">
+                        class="w-full border border-gray-300 px-3 py-2 focus:border-rosa-electrico focus:ring-rosa-electrico">
                 </div>
-                
+
                 <!-- Botón de registro -->
                 <div>
                     <button type="submit"
-                            class="w-full bg-rosa-electrico hover:bg-rosa-electrico hover:bg-opacity-90 text-white py-3 px-4 font-semibold transition duration-200">
+                        class="w-full bg-rosa-electrico hover:bg-rosa-electrico hover:bg-opacity-90 text-white py-3 px-4 font-semibold transition duration-200">
                         Crear perfil de actor
                     </button>
                 </div>
@@ -91,7 +91,7 @@ unset($__errorArgs, $__bag); ?>
                 <!-- Enlace a login -->
                 <div class="text-center mt-4">
                     <p class="text-sm text-gray-600">
-                        ¿Ya tienes cuenta? 
+                        ¿Ya tienes cuenta?
                         <a href="<?php echo e(route('login')); ?>" class="text-azul-profundo hover:text-azul-profundo hover:bg-opacity-90 font-medium">
                             Inicia sesión
                         </a>

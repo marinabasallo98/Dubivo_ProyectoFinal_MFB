@@ -59,20 +59,20 @@ class RegisterController extends Controller
             'role' => 'actor',
         ]);
 
-        //Creamos su perfil de actor vacío
+/*         //Creamos su perfil de actor vacío
         Actor::create([
             'user_id' => $user->id,
             'bio' => null,
             'genders' => [],
             'voice_ages' => [],
             'is_available' => true,
-        ]);
+        ]); */
 
         //Logueamos al usuario automáticamente
         Auth::login($user);
 
         //Lo enviamos a completar su perfil
-        return redirect()->route('actors.edit', $user->actorProfile)
+        return redirect()->route('actors.create')
             ->with('success', '¡Cuenta creada! Ahora completa tu perfil.');
     }
 

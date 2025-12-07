@@ -44,7 +44,6 @@
                         $genders = ['Femenino', 'Masculino', 'Otro'];
                         $selectedGenders = old('genders', $actor->genders ?? []);
                         @endphp
-                        {{-- Ordenamiento en cuadrícula solicitado --}}
                         <div class="grid grid-cols-2 gap-x-4 filter-scroll-container">
                             @foreach($genders as $gender)
                             <label class="flex items-center py-1">
@@ -66,10 +65,9 @@
                         </label>
                         @php
                         // Opciones de Edad Vocal
-                        $voiceAges = ['Niño', 'Adolescente', 'Adulto Joven', 'Adulto', 'Anciano', 'Atipada'];
+                        $voiceAges = ['Niño', 'Adolescente', 'Adulto joven', 'Adulto', 'Anciano', 'Atipada'];
                         $selectedAges = old('voice_ages', $actor->voice_ages ?? []);
                         @endphp
-                        {{-- Ordenamiento en cuadrícula solicitado --}}
                         <div class="grid grid-cols-2 gap-x-4 filter-scroll-container">
                             @foreach($voiceAges as $age)
                             <label class="flex items-center py-1">
@@ -111,7 +109,7 @@
 
                     <div>
                         <label for="bio" class="block text-sm font-medium text-gray-700 mb-2">
-                            Biografía
+                            Biografía<span class="text-rojo-intenso">*</span>
                         </label>
                         <textarea name="bio" id="bio" rows="4"
                             class="w-full border border-gray-300 px-3 py-2 focus:border-azul-profundo focus:ring-azul-profundo transition duration-200"

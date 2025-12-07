@@ -267,10 +267,6 @@
                                 <i class="fas fa-film text-4xl mb-4"></i>
                                 <p class="text-lg font-medium">No hay obras registradas</p>
                                 <p class="mt-2">Comienza añadiendo la primera obra</p>
-                                <a href="<?php echo e(route('admin.works.create')); ?>"
-                                    class="inline-block mt-4 bg-blue-600 text-white px-6 py-2 hover:bg-blue-700 font-medium">
-                                    Crear Primera Obra
-                                </a>
                             </div>
                         </td>
                     </tr>

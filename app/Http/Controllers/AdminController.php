@@ -202,7 +202,7 @@ class AdminController extends Controller
         }
 
         $genders = ['Masculino', 'Femenino', 'Otro'];
-        $voiceAges = ['Niño', 'Adolescente', 'Adulto Joven', 'Adulto', 'Anciano', 'Atipada'];
+        $voiceAges = ['Niño', 'Adolescente', 'Adulto joven', 'Adulto', 'Anciano', 'Atipada'];
 
         // Devolvemos el resultado
         $actors = $query->latest('id')->paginate(15)->withQueryString();

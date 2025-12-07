@@ -64,13 +64,13 @@
                     <?php if(auth()->guard()->check()): ?>
                     <?php if(Auth::user()->role == 'admin'): ?>
                     <div class="flex space-x-3">
-                        
+                        <!-- Botón Editar -->
                         <a href="<?php echo e(route('admin.works.edit', $work)); ?>"
                             class="bg-[#f59e0b] text-white px-4 py-2 hover:bg-[#d97706] flex items-center font-semibold transition duration-200 shadow-lg border border-[#d97706]">
                             <i class="fas fa-edit mr-2"></i>Editar
                         </a>
 
-                        
+                        <!-- Botón Eliminar -->
                         <form action="<?php echo e(route('admin.works.destroy', $work)); ?>" method="POST"
                             onsubmit="return confirm('¿Estás seguro de que quieres eliminar esta obra? Esta acción no se puede deshacer.');">
                             <?php echo csrf_field(); ?>
@@ -116,14 +116,14 @@
         </div>
     </div>
 
-    
+    <!-- Actores que participaron -->
     <?php if($work->actors->count() > 0): ?>
     <div class="bg-white shadow-md p-6 mb-6 border border-gray-200">
         <h2 class="text-2xl font-bold mb-4 text-gray-800">Actores que participaron</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <?php $__currentLoopData = $work->actors; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $actor): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
             <a href="<?php echo e(route('actors.show', $actor)); ?>" class="flex items-center space-x-3 p-3 border border-gray-200 hover:bg-gray-50 transition duration-200 group">
-                
+                <!-- Foto -->
                 <?php if($actor->photo): ?>
                 <img src="<?php echo e(asset('storage/' . $actor->photo)); ?>"
                     alt="<?php echo e($actor->user->name); ?>"
@@ -135,7 +135,7 @@
                 <?php endif; ?>
 
                 <div class="flex-1">
-                    
+                    <!-- Nombre -->
                     <h4 class="font-medium text-gray-800 group-hover:text-blue-600"><?php echo e($actor->user->name); ?></h4>
 
                     <p class="text-gray-600 text-sm mb-2">

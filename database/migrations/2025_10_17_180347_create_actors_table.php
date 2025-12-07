@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('audio_path')->nullable();
             
             //Selección múltiple (guardamos como JSON)
-            $table->json('genders')->nullable(); //Ej: ['Masculino', 'Femenino']
-            $table->json('voice_ages')->nullable(); //Ej: ['Niño', 'Adolescente']
+            $table->json('genders')->nullable();
+            $table->json('voice_ages')->nullable();
             
             //Disponibilidad del actor
             $table->boolean('is_available')->default(true);

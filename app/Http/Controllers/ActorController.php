@@ -68,7 +68,6 @@ class ActorController extends Controller
         return view('actors.index', compact('actors', 'genders', 'voiceAges', 'schools'));
     }
 
-
     public function edit()
     {
         // 1. Nos aseguramos de que el usuario logueado sea un actor y tenga un perfil
@@ -106,12 +105,12 @@ class ActorController extends Controller
 
     public function store(Request $request)
     {
-        // 1. Verificación: Si el actor ya tiene un perfil, no puede crearlo de nuevo.
+        // 1. Verificamos si el actor ya tiene un perfil
         if (Auth::user()->actorProfile) {
             return redirect()->route('dashboard')->with('error', 'Tu perfil de actor ya existe. Por favor, edítalo.');
         }
 
-        // 2. Validación (Ajusta estas reglas)
+        // 2. Validamos
         $request->validate([
             'bio' => 'required|string|max:1000',
             'photo' => 'nullable|file|mimes:jpeg,png,jpg|max:2048',
@@ -125,14 +124,14 @@ class ActorController extends Controller
             'character_names' => 'nullable|array',
         ]);
 
-        // 3. Manejo de archivos
+        // 3. Manejamos archivos
         $photoPath = $request->hasFile('photo') ?
             $this->guardarArchivo($request->file('photo'), 'photos') : null;
 
         $audioPath = $request->hasFile('audio_path') ?
             $this->guardarArchivo($request->file('audio_path'), 'audios') : null;
 
-        // 4. Creación del modelo Actor
+        // 4. Creamos modelo Actor
         $actor = Actor::create([
             'user_id' => Auth::id(),
             'bio' => $request->bio,
@@ -278,7 +277,6 @@ class ActorController extends Controller
         return redirect('/')->with('success', 'Tu cuenta ha sido eliminada correctamente.');
     }
 
-
     // Eliminamos el perfil del actor y su cuenta de usuario
     public function destroy(Actor $actor)
     {
@@ -326,8 +324,6 @@ class ActorController extends Controller
             'is_available' => $actor->is_available
         ]);
     }
-
-
 
     // Muestra el formulario de edición del actor logueado
     public function editProfile()

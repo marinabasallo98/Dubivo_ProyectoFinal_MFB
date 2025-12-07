@@ -40,43 +40,6 @@ class Actor extends Model
         return ['Niño', 'Adolescente', 'Adulto joven', 'Adulto', 'Anciano', 'Atipada'];
     }
 
-    // Scope para filtrar actores según request
-    public function scopeFiltrar($query, $request)
-    {
-        if ($request->filled('availability')) {
-            $query->where('is_available', $request->availability === '1');
-        }
-
-        if ($request->filled('genders')) {
-            foreach ($request->genders as $gender) {
-                $query->whereJsonContains('genders', $gender);
-            }
-        }
-
-        if ($request->filled('voice_ages')) {
-            foreach ($request->voice_ages as $age) {
-                $query->whereJsonContains('voice_ages', $age);
-            }
-        }
-
-        if ($request->filled('schools')) {
-            foreach ($request->schools as $schoolId) {
-                $query->whereHas('schools', function ($q) use ($schoolId) {
-                    $q->where('schools.id', $schoolId);
-                });
-            }
-        }
-
-        if ($request->filled('search')) {
-            $search = strtolower($request->search);
-            $query->whereHas('user', function ($q) use ($search) {
-                $q->whereRaw('LOWER(name) LIKE ?', ["%$search%"]);
-            });
-        }
-
-        return $query;
-    }
-
     // Agregamos trabajos con sus personajes
     public function agregarTrabajos($workIds, $characterNames = [])
     {

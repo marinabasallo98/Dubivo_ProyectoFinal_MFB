@@ -26,42 +26,6 @@ class Work extends Model
             ->withTimestamps();
     }
 
-    //Filtros por tipo
-    public function scopeMovies($query)
-    {
-        return $query->where('type', 'movie');
-    }
-
-    public function scopeSeries($query)
-    {
-        return $query->where('type', 'series');
-    }
-
-    public function scopeAnimation($query)
-    {
-        return $query->where('type', 'animation');
-    }
-
-    public function scopeCommercial($query)
-    {
-        return $query->where('type', 'commercial');
-    }
-
-    public function scopeVideogame($query)
-    {
-        return $query->where('type', 'videogame');
-    }
-
-    public function scopeDocumentary($query)
-    {
-        return $query->where('type', 'documentary');
-    }
-
-    public function scopeOther($query)
-    {
-        return $query->where('type', 'other');
-    }
-
     //Opciones de tipo para formularios
     public static function getTypeOptions()
     {

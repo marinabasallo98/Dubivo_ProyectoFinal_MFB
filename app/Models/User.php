@@ -44,22 +44,6 @@ class User extends Authenticatable
         return $this->hasManyThrough(School::class, Actor::class);
     }
 
-    //Filtros por rol
-    public function scopeActors($query)
-    {
-        return $query->where('role', 'actor');
-    }
-
-    public function scopeClients($query)
-    {
-        return $query->where('role', 'client');
-    }
-
-    public function scopeAdmins($query)
-    {
-        return $query->where('role', 'admin');
-    }
-
     //Verificamos roles fácilmente
     public function isAdmin()
     {

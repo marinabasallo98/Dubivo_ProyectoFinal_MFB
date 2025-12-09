@@ -229,7 +229,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div> {{-- Formación Académica --}}
                                 <label class="block text-sm font-medium text-gray-700 mb-3">
-                                    Formación Académica (Escuelas donde estudió) <span class="text-rojo-intenso">*</span>
+                                    Formación Académica
                                 </label>
                                 @php $actorSchoolIds = old('schools', $actor->schools->pluck('id')->toArray()); @endphp
                                 <div class="filter-scroll-container" style="max-height: 10rem;">
@@ -254,32 +254,48 @@
                                 @enderror
                             </div>
 
-                            <div> {{-- Escuelas donde enseña --}}
-                                <div class="bg-yellow-50 p-4 border border-yellow-200">
-                                    <h4 class="text-md font-semibold mb-3 text-yellow-800">Escuelas donde enseña (Opcional)</h4>
-                                    @php $actorTeachingSchoolIds = old('teaching_schools', $actor->teachingSchools->pluck('id')->toArray()); @endphp
-                                    <div class="filter-scroll-container" style="max-height: 10rem;">
+                            {{-- Escuelas donde enseña --}}
+                            <div class="bg-yellow-50 border border-yellow-200 rounded-md shadow-sm overflow-hidden">
+                                {{-- Cabecera del recuadro --}}
+                                <div class="p-4 border-b border-yellow-100">
+                                    <h4 class="text-md font-semibold text-yellow-800">
+                                        <i class="fas fa-chalkboard-teacher mr-2"></i>Escuelas donde enseña
+                                    </h4>
+                                </div>
+
+                                {{-- Contenedor con Scroll --}}
+                                <div class="max-h-40 overflow-y-auto p-4 bg-yellow-50/50">
+                                    @php
+                                    $actorTeachingSchoolIds = old('teaching_schools', $actor->teachingSchools->pluck('id')->toArray());
+                                    @endphp
+
+                                    <div class="space-y-2">
                                         @foreach($schools as $school)
-                                        <label class="flex items-center py-1">
-                                            <input type="checkbox" name="teaching_schools[]" value="{{ $school->id }}"
-                                                {{ in_array($school->id, $actorTeachingSchoolIds) ? 'checked' : '' }}
-                                                class="text-naranja-vibrante focus:ring-naranja-vibrante">
-                                            <span class="ml-2 text-sm text-gray-700">{{ $school->name }}</span>
+                                        <label class="flex items-center group cursor-pointer">
+                                            <div class="relative flex items-start">
+                                                <input type="checkbox" name="teaching_schools[]" value="{{ $school->id }}"
+                                                    {{ in_array($school->id, $actorTeachingSchoolIds) ? 'checked' : '' }}
+                                                    class="h-4 w-4 text-naranja-vibrante border-yellow-300 rounded focus:ring-naranja-vibrante bg-white">
+                                            </div>
+                                            <span class="ml-2 text-sm text-gray-700 group-hover:text-yellow-900 transition-colors">
+                                                {{ $school->name }}
+                                            </span>
                                         </label>
                                         @endforeach
                                     </div>
                                 </div>
-                                @error('teaching_schools')
-                                <p class="text-rojo-intenso text-sm mt-1">{{ $message }}</p>
-                                @enderror
                             </div>
+                            @error('teaching_schools')
+                            <p class="text-rojo-intenso text-sm mt-1 px-1">{{ $message }}</p>
+                            @enderror
                         </div>
 
-                        <div class="mt-8"> {{-- Obras Destacadas --}}
+                        {{-- Obras Destacadas --}}
+                        <div class="mt-8">
                             <label class="block text-sm font-medium text-gray-700 mb-3">
-                                Obras Destacadas (Experiencia)
+                                Obras Destacadas
                             </label>
-                            <p class="text-xs text-gray-500 mb-3">Selecciona las obras en las que ha participado y especifica el personaje que interpretó.</p>
+                            <p class="text-xs text-gray-500 mb-3">Selecciona las obras y especifica el personaje.</p>
 
                             @php
                             $actorWorkIds = old('works', $actor->works->pluck('id')->toArray());
@@ -287,40 +303,44 @@
                             $oldCharacters = old('character_names', $actorWorkPivots);
                             @endphp
 
-                            <div class="filter-scroll-container" style="max-height: 20rem;">
-                                @forelse($works as $work)
-                                @php
-                                $workId = $work->id;
-                                $isChecked = in_array($workId, $actorWorkIds);
-                                $characterValue = $oldCharacters[$workId] ?? '';
-                                @endphp
-                                <div class="p-2 border border-gray-300 bg-white shadow-sm mb-2">
-                                    <label class="flex items-center">
-                                        {{-- Checkbox de la Obra --}}
-                                        <input type="checkbox" name="works[]" value="{{ $workId }}"
-                                            class="work-checkbox text-azul-profundo focus:ring-azul-profundo"
-                                            id="work_{{ $workId }}"
-                                            {{ $isChecked ? 'checked' : '' }}>
-                                        <span class="ml-2 text-sm text-gray-800 font-semibold">{{ $work->title }} ({{ $work->year ?? 'Año Desconocido' }})</span>
-                                    </label>
+                            {{-- AQUI EL CAMBIO: Usamos clases nativas de Tailwind para el scroll y Grid para el diseño --}}
+                            <div class="border border-gray-300 bg-gray-50 p-4 rounded max-h-80 overflow-y-auto">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    @forelse($works as $work)
+                                    @php
+                                    $workId = $work->id;
+                                    $isChecked = in_array($workId, $actorWorkIds);
+                                    $characterValue = $oldCharacters[$workId] ?? '';
+                                    @endphp
 
-                                    {{-- Input para el Personaje --}}
-                                    <div class="ml-6 mt-2">
-                                        <label for="character_{{ $workId }}" class="block text-xs font-normal text-gray-600 mb-1">
-                                            Personaje interpretado:
+                                    {{-- Tarjeta simplificada y compacta --}}
+                                    <div class="bg-white border border-gray-200 p-3 rounded hover:shadow-md transition-shadow duration-200">
+                                        <label class="flex items-start cursor-pointer">
+                                            <div class="flex items-center h-5">
+                                                <input type="checkbox" name="works[]" value="{{ $workId }}"
+                                                    class="w-4 h-4 text-azul-profundo border-gray-300 rounded focus:ring-azul-profundo"
+                                                    {{ $isChecked ? 'checked' : '' }}>
+                                            </div>
+                                            <div class="ml-2 text-sm w-full">
+                                                <span class="font-medium text-gray-800">{{ $work->title }}</span>
+                                                <span class="text-xs text-gray-500 block">({{ $work->year ?? 'Año N/A' }})</span>
+                                            </div>
                                         </label>
-                                        <input type="text" name="character_names[{{ $workId }}]" id="character_{{ $workId }}"
-                                            value="{{ $characterValue }}"
-                                            placeholder="Ej: Voz de 'Main Character'"
-                                            class="w-full border border-gray-300 px-3 py-1 text-sm focus:border-azul-profundo focus:ring-azul-profundo transition duration-200">
-                                        @error("character_names.$workId")
-                                        <p class="text-rojo-intenso text-sm mt-1">{{ $message }}</p>
-                                        @enderror
+
+                                        {{-- Input del personaje (siempre visible para facilitar edición) --}}
+                                        <div class="mt-2 ml-6">
+                                            <input type="text" name="character_names[{{ $workId }}]"
+                                                value="{{ $characterValue }}"
+                                                placeholder="Personaje..."
+                                                class="w-full text-xs border-b border-gray-300 py-1 focus:outline-none focus:border-azul-profundo bg-transparent transition-colors placeholder-gray-400">
+                                        </div>
                                     </div>
+                                    @empty
+                                    <div class="col-span-2 text-center text-gray-500 py-4">
+                                        No hay obras registradas en el sistema.
+                                    </div>
+                                    @endforelse
                                 </div>
-                                @empty
-                                <p class="text-gray-500 text-sm">No hay obras registradas</p>
-                                @endforelse
                             </div>
                             @error('works')
                             <p class="text-rojo-intenso text-sm mt-1">{{ $message }}</p>

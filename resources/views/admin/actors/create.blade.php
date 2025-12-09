@@ -208,10 +208,10 @@
                         <h3 class="text-xl font-semibold mb-6 border-b pb-3 text-gray-700">3. Formación y Trabajos</h3>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <!-- Escuelas (Formación) -->
+                            <!-- Escuelas -->
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">
-                                    Formación Académica (Escuelas donde estudió) <span class="text-rojo-intenso">*</span>
+                                    Formación Académica
                                 </label>
                                 <div class="filter-scroll-container">
                                     @forelse($schools as $school)
@@ -235,59 +235,89 @@
                                 @enderror
                             </div>
 
-                            <!-- Escuelas (Profesor) -->
-                            <div>
-                                <div class="bg-yellow-50 p-4 border border-yellow-200">
-                                    <h4 class="text-md font-semibold mb-3 text-yellow-800">Escuelas donde enseña (Opcional)</h4>
-                                    <div class="filter-scroll-container">
+                            <!-- Escuelas -->
+                            <div class="bg-yellow-50 border border-yellow-200 rounded-md shadow-sm overflow-hidden">
+                                <div class="p-4 border-b border-yellow-100">
+                                    <h4 class="text-md font-semibold text-yellow-800">
+                                        Escuelas donde enseña
+                                    </h4>
+                                </div>
+
+                                <div class="max-h-40 overflow-y-auto p-4 bg-yellow-50/50">
+                                    @php
+                                    $selectedSchoolIds = old('teaching_schools', []);
+                                    @endphp
+
+                                    <div class="space-y-2">
                                         @foreach($schools as $school)
-                                        <label class="flex items-center py-1">
-                                            <input type="checkbox" name="teaching_schools[]" value="{{ $school->id }}"
-                                                {{ in_array($school->id, old('teaching_schools', [])) ? 'checked' : '' }}
-                                                class="text-yellow-600 focus:ring-yellow-500">
-                                            <span class="ml-2 text-sm text-gray-700">{{ $school->name }}</span>
+                                        <label class="flex items-center group cursor-pointer">
+                                            <div class="relative flex items-start">
+                                                <input type="checkbox" name="teaching_schools[]" value="{{ $school->id }}"
+                                                    {{ in_array($school->id, $selectedSchoolIds) ? 'checked' : '' }}
+                                                    class="h-4 w-4 text-naranja-vibrante border-yellow-300 rounded focus:ring-naranja-vibrante bg-white">
+                                            </div>
+                                            <span class="ml-2 text-sm text-gray-700 group-hover:text-yellow-900 transition-colors">
+                                                {{ $school->name }}
+                                            </span>
                                         </label>
                                         @endforeach
                                     </div>
                                 </div>
-                                @error('teaching_schools')
-                                <p class="text-rojo-intenso text-sm mt-1">{{ $message }}</p>
-                                @enderror
                             </div>
+                            @error('teaching_schools')
+                            <p class="text-rojo-intenso text-sm mt-1 px-1">{{ $message }}</p>
+                            @enderror
                         </div>
 
-                        <!-- Obras (Trabajos Destacados) -->
+                        <!-- Obras -->
                         <div class="mt-8">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Trabajos Destacados (Rol y Personaje)
+                            <label class="block text-sm font-medium text-gray-700 mb-3">
+                                Obras Destacadas (Experiencia)
                             </label>
-                            <div class="filter-scroll-container">
-                                @forelse($works as $work)
-                                <div class="flex flex-col p-3 border border-gray-200 bg-gray-50 mb-2">
-                                    <div class="flex items-start">
-                                        <input type="checkbox" name="works[]" value="{{ $work->id }}"
-                                            class="mt-1 text-morado-vibrante focus:ring-morado-vibrante"
-                                            {{ in_array($work->id, old('works', [])) ? 'checked' : '' }}>
-                                        <div class="flex-1 ml-2">
-                                            <span class="text-sm font-semibold text-gray-800">{{ $work->title }}</span>
-                                            <div class="text-xs text-gray-500">
-                                                <span class="capitalize">{{ $work->type }}</span>
-                                                @if($work->year)
-                                                · {{ $work->year }}
-                                                @endif
+                            <p class="text-xs text-gray-500 mb-3">Selecciona las obras y especifica el personaje.</p>
+
+                            @php
+                            $selectedWorkIds = old('works', []);
+                            $oldCharacters = old('character_names', []);
+                            @endphp
+
+                            {{-- Contenedor con Scroll y Grid --}}
+                            <div class="border border-gray-300 bg-gray-50 p-4 rounded max-h-80 overflow-y-auto">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    @forelse($works as $work)
+                                    @php
+                                    $workId = $work->id;
+                                    $isChecked = in_array($workId, $selectedWorkIds);
+                                    $characterValue = $oldCharacters[$workId] ?? '';
+                                    @endphp
+
+                                    <div class="bg-white border border-gray-200 p-3 rounded hover:shadow-md transition-shadow duration-200">
+                                        <label class="flex items-start cursor-pointer">
+                                            <div class="flex items-center h-5">
+                                                <input type="checkbox" name="works[]" value="{{ $workId }}"
+                                                    class="w-4 h-4 text-azul-profundo border-gray-300 rounded focus:ring-azul-profundo"
+                                                    {{ $isChecked ? 'checked' : '' }}>
                                             </div>
+                                            <div class="ml-2 text-sm w-full">
+                                                <span class="font-medium text-gray-800">{{ $work->title }}</span>
+                                                <span class="text-xs text-gray-500 block">({{ $work->year ?? 'Año N/A' }})</span>
+                                            </div>
+                                        </label>
+
+                                        {{-- Input del personaje --}}
+                                        <div class="mt-2 ml-6">
+                                            <input type="text" name="character_names[{{ $workId }}]"
+                                                value="{{ $characterValue }}"
+                                                placeholder="Personaje..."
+                                                class="w-full text-xs border-b border-gray-300 py-1 focus:outline-none focus:border-azul-profundo bg-transparent transition-colors placeholder-gray-400">
                                         </div>
                                     </div>
-                                    <div class="mt-2 ml-6">
-                                        <input type="text" name="character_names[{{ $work->id }}]"
-                                            placeholder="Personaje que interpretó"
-                                            class="w-full text-sm border border-gray-300 px-3 py-1.5 focus:ring-morado-vibrante focus:border-morado-vibrante transition duration-200"
-                                            value="{{ old('character_names.' . $work->id) }}">
+                                    @empty
+                                    <div class="col-span-2 text-center text-gray-500 py-4">
+                                        No hay obras registradas en el sistema.
                                     </div>
+                                    @endforelse
                                 </div>
-                                @empty
-                                <p class="text-gray-500 text-sm">No hay obras registradas</p>
-                                @endforelse
                             </div>
                             @error('works')
                             <p class="text-rojo-intenso text-sm mt-1">{{ $message }}</p>

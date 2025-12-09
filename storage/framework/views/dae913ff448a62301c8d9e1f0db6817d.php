@@ -214,29 +214,6 @@
             filterToggle.addEventListener('click', () => filterColumn.classList.toggle('hidden'));
             if (closeFilters) closeFilters.addEventListener('click', () => filterColumn.classList.add('hidden'));
         }
-
-        // Reproducir / pausar audio
-        const globalAudio = document.getElementById('globalAudio');
-        document.querySelectorAll('.photo-container').forEach(container => {
-            const playBtn = container.querySelector('.audio-play');
-            const pauseBtn = container.querySelector('.audio-pause');
-            const src = container.dataset.audioSrc;
-
-            if (playBtn && pauseBtn && src) {
-                playBtn.addEventListener('click', e => {
-                    globalAudio.src = src;
-                    globalAudio.play();
-                    playBtn.classList.add('hidden');
-                    pauseBtn.classList.remove('hidden');
-                });
-                pauseBtn.addEventListener('click', e => {
-                    globalAudio.pause();
-                    playBtn.classList.remove('hidden');
-                    pauseBtn.classList.add('hidden');
-                });
-            }
-        });
-
     });
 </script>
 <?php $__env->stopSection(); ?>

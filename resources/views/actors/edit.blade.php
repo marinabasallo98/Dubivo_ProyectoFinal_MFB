@@ -119,55 +119,54 @@
                         @enderror
                     </div>
 
-                    <div>
+                    {{-- Obras Destacadas --}}
+                    <div class="mt-8">
                         <label class="block text-sm font-medium text-gray-700 mb-3">
                             Obras Destacadas (Experiencia)
                         </label>
+                        <p class="text-xs text-gray-500 mb-3">Selecciona las obras y especifica el personaje.</p>
+
                         @php
-                        // Prepara las obras del actor y su personaje asociado para la vista de edición
-                        $actorWorks = $actor->works->keyBy('id')->map(fn($work) => $work->pivot->character_name)->toArray();
-
-                        // Valores preseleccionados (IDs de las obras)
-                        $selectedWorks = old('works', array_keys($actorWorks));
-
-                        // Valores de los personajes (guardados o antiguos)
-                        $oldCharacters = old('characters', $actorWorks);
+                        $actorWorkIds = old('works', $actor->works->pluck('id')->toArray());
+                        $actorWorkPivots = $actor->works->keyBy('id')->map(fn($work) => $work->pivot->character_name)->toArray();
+                        $oldCharacters = old('character_names', $actorWorkPivots);
                         @endphp
 
-                        <p class="text-xs text-gray-500 mb-3">Selecciona las obras en las que has participado y especifica el personaje que interpretaste.</p>
+                        <div class="border border-gray-300 bg-gray-50 p-4 rounded max-h-80 overflow-y-auto">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                @forelse($works as $work)
+                                @php
+                                $workId = $work->id;
+                                $isChecked = in_array($workId, $actorWorkIds);
+                                $characterValue = $oldCharacters[$workId] ?? '';
+                                @endphp
 
-                        <div class="filter-scroll-container space-y-2">
-                            @foreach($works as $work)
-                            @php
-                            $workId = $work->id;
-                            $isChecked = in_array($workId, $selectedWorks);
-                            $characterValue = $oldCharacters[$workId] ?? '';
-                            @endphp
-                            <div class="p-2 border border-gray-300 bg-white shadow-sm">
-                                <label class="flex items-center">
-                                    {{-- Checkbox de la Obra --}}
-                                    <input type="checkbox" name="works[]" value="{{ $workId }}"
-                                        class="work-checkbox text-azul-profundo focus:ring-azul-profundo"
-                                        id="work_{{ $workId }}"
-                                        {{ $isChecked ? 'checked' : '' }}>
-                                    <span class="ml-2 text-sm text-gray-800 font-semibold">{{ $work->title }} ({{ $work->year ?? 'Año Desconocido' }})</span>
-                                </label>
-
-                                {{-- Input para el Personaje --}}
-                                <div class="ml-6 mt-2">
-                                    <label for="character_{{ $workId }}" class="block text-xs font-normal text-gray-600 mb-1">
-                                        Personaje interpretado:
+                                <div class="bg-white border border-gray-200 p-3 rounded hover:shadow-md transition-shadow duration-200">
+                                    <label class="flex items-start cursor-pointer">
+                                        <div class="flex items-center h-5">
+                                            <input type="checkbox" name="works[]" value="{{ $workId }}"
+                                                class="w-4 h-4 text-azul-profundo border-gray-300 rounded focus:ring-azul-profundo"
+                                                {{ $isChecked ? 'checked' : '' }}>
+                                        </div>
+                                        <div class="ml-2 text-sm w-full">
+                                            <span class="font-medium text-gray-800">{{ $work->title }}</span>
+                                            <span class="text-xs text-gray-500 block">({{ $work->year ?? 'Año N/A' }})</span>
+                                        </div>
                                     </label>
-                                    <input type="text" name="characters[{{ $workId }}]" id="character_{{ $workId }}"
-                                        value="{{ $characterValue }}"
-                                        placeholder="Ej: Voz de 'Main Character'"
-                                        class="w-full border border-gray-300 px-3 py-1 text-sm focus:border-azul-profundo focus:ring-azul-profundo transition duration-200">
-                                    @error("characters.$workId")
-                                    <p class="text-rojo-intenso text-sm mt-1">{{ $message }}</p>
-                                    @enderror
+
+                                    <div class="mt-2 ml-6">
+                                        <input type="text" name="character_names[{{ $workId }}]"
+                                            value="{{ $characterValue }}"
+                                            placeholder="Personaje..."
+                                            class="w-full text-xs border-b border-gray-300 py-1 focus:outline-none focus:border-azul-profundo bg-transparent transition-colors placeholder-gray-400">
+                                    </div>
                                 </div>
+                                @empty
+                                <div class="col-span-2 text-center text-gray-500 py-4">
+                                    No hay obras registradas en el sistema.
+                                </div>
+                                @endforelse
                             </div>
-                            @endforeach
                         </div>
                         @error('works')
                         <p class="text-rojo-intenso text-sm mt-1">{{ $message }}</p>

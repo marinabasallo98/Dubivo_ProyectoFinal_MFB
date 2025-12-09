@@ -324,7 +324,7 @@ unset($__errorArgs, $__bag); ?>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div> 
                                 <label class="block text-sm font-medium text-gray-700 mb-3">
-                                    Formación Académica (Escuelas donde estudió) <span class="text-rojo-intenso">*</span>
+                                    Formación Académica
                                 </label>
                                 <?php $actorSchoolIds = old('schools', $actor->schools->pluck('id')->toArray()); ?>
                                 <div class="filter-scroll-container" style="max-height: 10rem;">
@@ -357,40 +357,57 @@ endif;
 unset($__errorArgs, $__bag); ?>
                             </div>
 
-                            <div> 
-                                <div class="bg-yellow-50 p-4 border border-yellow-200">
-                                    <h4 class="text-md font-semibold mb-3 text-yellow-800">Escuelas donde enseña (Opcional)</h4>
-                                    <?php $actorTeachingSchoolIds = old('teaching_schools', $actor->teachingSchools->pluck('id')->toArray()); ?>
-                                    <div class="filter-scroll-container" style="max-height: 10rem;">
-                                        <?php $__currentLoopData = $schools; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $school): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <label class="flex items-center py-1">
-                                            <input type="checkbox" name="teaching_schools[]" value="<?php echo e($school->id); ?>"
-                                                <?php echo e(in_array($school->id, $actorTeachingSchoolIds) ? 'checked' : ''); ?>
+                            
+                            <div class="bg-yellow-50 border border-yellow-200 rounded-md shadow-sm overflow-hidden">
+                                
+                                <div class="p-4 border-b border-yellow-100">
+                                    <h4 class="text-md font-semibold text-yellow-800">
+                                        <i class="fas fa-chalkboard-teacher mr-2"></i>Escuelas donde enseña
+                                    </h4>
+                                </div>
 
-                                                class="text-naranja-vibrante focus:ring-naranja-vibrante">
-                                            <span class="ml-2 text-sm text-gray-700"><?php echo e($school->name); ?></span>
+                                
+                                <div class="max-h-40 overflow-y-auto p-4 bg-yellow-50/50">
+                                    <?php
+                                    $actorTeachingSchoolIds = old('teaching_schools', $actor->teachingSchools->pluck('id')->toArray());
+                                    ?>
+
+                                    <div class="space-y-2">
+                                        <?php $__currentLoopData = $schools; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $school): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <label class="flex items-center group cursor-pointer">
+                                            <div class="relative flex items-start">
+                                                <input type="checkbox" name="teaching_schools[]" value="<?php echo e($school->id); ?>"
+                                                    <?php echo e(in_array($school->id, $actorTeachingSchoolIds) ? 'checked' : ''); ?>
+
+                                                    class="h-4 w-4 text-naranja-vibrante border-yellow-300 rounded focus:ring-naranja-vibrante bg-white">
+                                            </div>
+                                            <span class="ml-2 text-sm text-gray-700 group-hover:text-yellow-900 transition-colors">
+                                                <?php echo e($school->name); ?>
+
+                                            </span>
                                         </label>
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </div>
                                 </div>
-                                <?php $__errorArgs = ['teaching_schools'];
+                            </div>
+                            <?php $__errorArgs = ['teaching_schools'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?>
-                                <p class="text-rojo-intenso text-sm mt-1"><?php echo e($message); ?></p>
-                                <?php unset($message);
+                            <p class="text-rojo-intenso text-sm mt-1 px-1"><?php echo e($message); ?></p>
+                            <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
-                            </div>
                         </div>
 
-                        <div class="mt-8"> 
+                        
+                        <div class="mt-8">
                             <label class="block text-sm font-medium text-gray-700 mb-3">
-                                Obras Destacadas (Experiencia)
+                                Obras Destacadas
                             </label>
-                            <p class="text-xs text-gray-500 mb-3">Selecciona las obras en las que ha participado y especifica el personaje que interpretó.</p>
+                            <p class="text-xs text-gray-500 mb-3">Selecciona las obras y especifica el personaje.</p>
 
                             <?php
                             $actorWorkIds = old('works', $actor->works->pluck('id')->toArray());
@@ -398,47 +415,44 @@ unset($__errorArgs, $__bag); ?>
                             $oldCharacters = old('character_names', $actorWorkPivots);
                             ?>
 
-                            <div class="filter-scroll-container" style="max-height: 20rem;">
-                                <?php $__empty_1 = true; $__currentLoopData = $works; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $work): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                                <?php
-                                $workId = $work->id;
-                                $isChecked = in_array($workId, $actorWorkIds);
-                                $characterValue = $oldCharacters[$workId] ?? '';
-                                ?>
-                                <div class="p-2 border border-gray-300 bg-white shadow-sm mb-2">
-                                    <label class="flex items-center">
-                                        
-                                        <input type="checkbox" name="works[]" value="<?php echo e($workId); ?>"
-                                            class="work-checkbox text-azul-profundo focus:ring-azul-profundo"
-                                            id="work_<?php echo e($workId); ?>"
-                                            <?php echo e($isChecked ? 'checked' : ''); ?>>
-                                        <span class="ml-2 text-sm text-gray-800 font-semibold"><?php echo e($work->title); ?> (<?php echo e($work->year ?? 'Año Desconocido'); ?>)</span>
-                                    </label>
+                            
+                            <div class="border border-gray-300 bg-gray-50 p-4 rounded max-h-80 overflow-y-auto">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <?php $__empty_1 = true; $__currentLoopData = $works; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $work): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                                    <?php
+                                    $workId = $work->id;
+                                    $isChecked = in_array($workId, $actorWorkIds);
+                                    $characterValue = $oldCharacters[$workId] ?? '';
+                                    ?>
 
                                     
-                                    <div class="ml-6 mt-2">
-                                        <label for="character_<?php echo e($workId); ?>" class="block text-xs font-normal text-gray-600 mb-1">
-                                            Personaje interpretado:
+                                    <div class="bg-white border border-gray-200 p-3 rounded hover:shadow-md transition-shadow duration-200">
+                                        <label class="flex items-start cursor-pointer">
+                                            <div class="flex items-center h-5">
+                                                <input type="checkbox" name="works[]" value="<?php echo e($workId); ?>"
+                                                    class="w-4 h-4 text-azul-profundo border-gray-300 rounded focus:ring-azul-profundo"
+                                                    <?php echo e($isChecked ? 'checked' : ''); ?>>
+                                            </div>
+                                            <div class="ml-2 text-sm w-full">
+                                                <span class="font-medium text-gray-800"><?php echo e($work->title); ?></span>
+                                                <span class="text-xs text-gray-500 block">(<?php echo e($work->year ?? 'Año N/A'); ?>)</span>
+                                            </div>
                                         </label>
-                                        <input type="text" name="character_names[<?php echo e($workId); ?>]" id="character_<?php echo e($workId); ?>"
-                                            value="<?php echo e($characterValue); ?>"
-                                            placeholder="Ej: Voz de 'Main Character'"
-                                            class="w-full border border-gray-300 px-3 py-1 text-sm focus:border-azul-profundo focus:ring-azul-profundo transition duration-200">
-                                        <?php $__errorArgs = ["character_names.$workId"];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                        <p class="text-rojo-intenso text-sm mt-1"><?php echo e($message); ?></p>
-                                        <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
+
+                                        
+                                        <div class="mt-2 ml-6">
+                                            <input type="text" name="character_names[<?php echo e($workId); ?>]"
+                                                value="<?php echo e($characterValue); ?>"
+                                                placeholder="Personaje..."
+                                                class="w-full text-xs border-b border-gray-300 py-1 focus:outline-none focus:border-azul-profundo bg-transparent transition-colors placeholder-gray-400">
+                                        </div>
                                     </div>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                                    <div class="col-span-2 text-center text-gray-500 py-4">
+                                        No hay obras registradas en el sistema.
+                                    </div>
+                                    <?php endif; ?>
                                 </div>
-                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-                                <p class="text-gray-500 text-sm">No hay obras registradas</p>
-                                <?php endif; ?>
                             </div>
                             <?php $__errorArgs = ['works'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');

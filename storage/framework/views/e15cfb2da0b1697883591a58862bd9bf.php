@@ -195,49 +195,53 @@ endif;
 unset($__errorArgs, $__bag); ?>
                     </div>
 
-                    <div>
+                    
+                    <div class="mt-8">
                         <label class="block text-sm font-medium text-gray-700 mb-3">
-                            Obras Destacadas
+                            Obras Destacadas (Experiencia)
                         </label>
-                        <div class="filter-scroll-container">
-                            <?php $__currentLoopData = $works; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $work): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                            <?php
-                            // Comprobamos si la obra estaba seleccionada en la sesión anterior (si hubo error de validación)
-                            $checked = in_array($work->id, old('works', []));
-                            $character_name = old('character_names.' . $work->id, '');
-                            ?>
+                        <p class="text-xs text-gray-500 mb-3">Selecciona las obras y especifica el personaje.</p>
 
-                            <div class="flex flex-col space-y-1 py-1 px-2">
+                        <?php
+                        $selectedWorkIds = old('works', []);
+                        $oldCharacters = old('character_names', []);
+                        ?>
 
-                                <!-- CHECKBOX DE LA OBRA -->
-                                <label class="flex items-center">
-                                    <input type="checkbox" name="works[]" value="<?php echo e($work->id); ?>"
-                                        <?php echo e($checked ? 'checked' : ''); ?>
+                        <div class="border border-gray-300 bg-gray-50 p-4 rounded max-h-80 overflow-y-auto">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <?php $__empty_1 = true; $__currentLoopData = $works; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $work): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                                <?php
+                                $workId = $work->id;
+                                $isChecked = in_array($workId, $selectedWorkIds);
+                                $characterValue = $oldCharacters[$workId] ?? '';
+                                ?>
 
-                                        class="text-rosa-electrico focus:ring-rosa-electrico work-checkbox"
-                                        data-work-id="<?php echo e($work->id); ?>">
-                                    <span class="ml-2 text-sm text-gray-700 font-medium"><?php echo e($work->title); ?></span>
-                                </label>
+                                <div class="bg-white border border-gray-200 p-3 rounded hover:shadow-md transition-shadow duration-200">
+                                    <label class="flex items-start cursor-pointer">
+                                        <div class="flex items-center h-5">
+                                            <input type="checkbox" name="works[]" value="<?php echo e($workId); ?>"
+                                                class="w-4 h-4 text-azul-profundo border-gray-300 rounded focus:ring-azul-profundo"
+                                                <?php echo e($isChecked ? 'checked' : ''); ?>>
+                                        </div>
+                                        <div class="ml-2 text-sm w-full">
+                                            <span class="font-medium text-gray-800"><?php echo e($work->title); ?></span>
+                                            <span class="text-xs text-gray-500 block">(<?php echo e($work->year ?? 'Año N/A'); ?>)</span>
+                                        </div>
+                                    </label>
 
-                                <!-- INPUT DEL NOMBRE DEL PERSONAJE (SIEMPRE VISIBLE) -->
-                                <div class="mt-1 ml-6">
-                                    <input type="text" name="character_names[<?php echo e($work->id); ?>]"
-                                        value="<?php echo e($character_name); ?>"
-                                        placeholder="Nombre del personaje"
-                                        class="w-full border border-gray-300 px-3 py-1 text-sm focus:border-rosa-electrico focus:ring-rosa-electrico">
-                                    <?php $__errorArgs = ['character_names.' . $work->id];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                    <p class="text-rojo-intenso text-sm mt-1"><?php echo e($message); ?></p>
-                                    <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
+                                    <div class="mt-2 ml-6">
+                                        <input type="text" name="character_names[<?php echo e($workId); ?>]"
+                                            value="<?php echo e($characterValue); ?>"
+                                            placeholder="Personaje..."
+                                            class="w-full text-xs border-b border-gray-300 py-1 focus:outline-none focus:border-azul-profundo bg-transparent transition-colors placeholder-gray-400">
+                                    </div>
                                 </div>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                                <div class="col-span-2 text-center text-gray-500 py-4">
+                                    No hay obras registradas en el sistema.
+                                </div>
+                                <?php endif; ?>
                             </div>
-                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </div>
                         <?php $__errorArgs = ['works'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -360,7 +364,7 @@ unset($__errorArgs, $__bag); ?>
 </style>
 <?php $__env->startSection('scripts'); ?>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         const worksCheckboxes = document.querySelectorAll('.work-checkbox');
 
         worksCheckboxes.forEach(checkbox => {
@@ -383,7 +387,7 @@ unset($__errorArgs, $__bag); ?>
                     }
                 }
             };
-            
+
             // 1. Inicializar el estado al cargar la página (para valores old() o recarga)
             toggleCharacterInput(checkbox.checked);
 

@@ -1,4 +1,4 @@
-# Laravel Web Application
+# Dubivo: Laravel Web Application
 Full-stack web application built with Laravel using Blade views.
 
 ## Features
